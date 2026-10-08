@@ -1,158 +1,313 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Mobile Pass K4</title><meta name="theme-color" content="#2557d6">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Mobile Pass K4">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Mobile Pass K4">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f5f9;--card:#fff;--tx:#14213d;--mut:#667085;--bd:#e3e7ee;--pri:#2557d6}
+:root{--bg:#f3f5f9;--card:#fff;--tx:#14213d;--mut:#667085;--bd:#e3e7ee;--pri:#2557d6}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1420;--card:#18202f;--tx:#eef2f9;--mut:#9aa6ba;--bd:#27324a;--pri:#6b8cff}}
 :root[data-theme="dark"]{--bg:#0e1420;--card:#18202f;--tx:#eef2f9;--mut:#9aa6ba;--bd:#27324a;--pri:#6b8cff}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-.wrap{max-width:560px;margin:0 auto;padding:16px}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-h1{font-size:22px;margin:0}h2{font-size:17px;margin:20px 0 8px}
-.badge{font-size:12px;background:var(--pri);color:#fff;border-radius:99px;padding:2px 10px;margin-left:6px;vertical-align:middle}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
-input,select{width:100%;padding:12px;margin:5px 0 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
-label{font-size:13px;color:var(--mut)}
-button{font:inherit;border:0;border-radius:10px;padding:11px 16px;background:var(--pri);color:#fff;cursor:pointer;font-weight:600}
-button.s{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}button.d{background:#d92d20}button.sm{padding:6px 10px;font-size:13px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{text-align:center}.stat b{display:block;font-size:30px}
-.pass{border-radius:20px;padding:18px;color:#fff;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
-.pass.t{background:linear-gradient(135deg,#f59e0b,#ea580c)}.pass.p{background:linear-gradient(135deg,#059669,#0f766e)}.pass.x{background:linear-gradient(135deg,#6b7280,#374151)}
-.pass h3{margin:0 0 2px;font-size:20px}.pass small{opacity:.85}
-.clock{font:700 34px/1.2 ui-monospace,Menlo,monospace;background:rgba(0,0,0,.22);border-radius:12px;text-align:center;padding:8px;margin:12px 0}
-.kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid rgba(255,255,255,.25);font-size:14px}.kv b{text-align:right;word-break:break-all}
-.pass input{background:rgba(255,255,255,.92);color:#111;border:0}
-.err{color:#d92d20;font-size:14px;min-height:20px}.mut{color:var(--mut);font-size:13px}
-.u{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--bd)}.u:first-child{border:0}
-.tag{font-size:11px;padding:1px 8px;border-radius:99px;margin-left:4px;color:#fff}.tag.t{background:#ea580c}.tag.p{background:#059669}.tag.a{background:#7c3aed}
-.wide{overflow-x:auto}
-html{-webkit-text-size-adjust:100%}body{overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
-.wrap{padding:12px 12px 48px}header{flex-wrap:wrap;gap:6px}h1{font-size:20px;display:flex;align-items:center}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-top:env(safe-area-inset-top,0px);overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+.wrap{max-width:560px;margin:0 auto;padding:12px 12px 48px}body.adm .wrap{padding-bottom:104px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px}
+h1{font-size:20px;margin:0;display:flex;align-items:center}h2{font-size:17px;margin:20px 0 8px}h3{margin:0}
+.hr{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.badge{font-size:12px;background:var(--pri);color:#fff;border-radius:99px;padding:2px 10px}
 .logo{height:34px;width:auto;max-width:120px;object-fit:contain;margin-right:8px;border-radius:6px}
-button{min-height:46px}button.sm{min-height:42px;flex:1}input,select{min-height:48px;font-size:16px}
-.clock{font-size:clamp(26px,9vw,38px)}.kv{font-size:15px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
+input,select,textarea{width:100%;padding:12px;margin:5px 0 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit;min-height:48px;font-size:16px}
+textarea{min-height:100px;resize:vertical}
+label{font-size:13px;color:var(--mut)}
+button{font:inherit;border:0;border-radius:10px;padding:11px 16px;background:var(--pri);color:#fff;cursor:pointer;font-weight:600;min-height:46px}
+button.s{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}button.d{background:#d92d20}button.sm{padding:6px 10px;font-size:14px;min-height:42px;flex:1}
+button.ib{background:var(--card);color:var(--tx);border:1px solid var(--bd);min-height:36px;padding:2px 10px}
+button.lnk{background:none;color:var(--pri);padding:0 4px;min-height:0;font-weight:600}
+select.lang{width:auto;min-height:36px;padding:2px 8px;margin:0;font-size:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{text-align:center;margin-bottom:0}.stat b{display:block;font-size:30px}
+.tap{cursor:pointer}.tap:active{transform:scale(.97)}
+.pass{border-radius:20px;padding:18px;color:#fff;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,.18);position:relative;overflow:hidden}
+.pass.t{background:linear-gradient(135deg,#f59e0b,#ea580c)}.pass.p{background:linear-gradient(135deg,#059669,#0f766e)}.pass.x{background:linear-gradient(135deg,#6b7280,#374151)}
+.pass::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.22) 50%,transparent 65%);transform:translateX(-100%);animation:shine 3.2s linear infinite;pointer-events:none}
+@keyframes shine{to{transform:translateX(100%)}}
+.pass h3{font-size:20px;margin-bottom:2px}.pass small{opacity:.85}
+.live{display:flex;align-items:center;gap:6px;font-size:13px;opacity:.95;margin-top:6px}.live i{width:9px;height:9px;border-radius:50%;background:#fff;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+.clock{font:700 34px/1.2 ui-monospace,Menlo,monospace;background:rgba(0,0,0,.22);border-radius:12px;text-align:center;padding:8px;margin:12px 0;font-size:clamp(26px,9vw,38px)}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid rgba(255,255,255,.25);font-size:15px}.kv b{text-align:right;word-break:break-all}
+.pass input{background:rgba(255,255,255,.92);color:#111;border:0}
+.err{color:#d92d20;font-size:14px;min-height:20px}.mut{color:var(--mut);font-size:13px}.mut2{font-size:13px;opacity:.9}
+.tag{font-size:11px;padding:1px 8px;border-radius:99px;margin-left:4px;color:#fff;white-space:nowrap}.tag.t{background:#ea580c}.tag.p{background:#059669}.tag.a{background:#7c3aed}.tag.r{background:#d92d20}.tag.n{background:#667085}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:4px}
+.chip{white-space:nowrap;flex:none;min-height:36px;padding:6px 12px;border-radius:99px;background:var(--card);color:var(--tx);border:1px solid var(--bd);font-weight:500;font-size:14px}.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.uh{display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:8px}.chev{color:var(--mut);font-size:18px}
+.ur{padding:12px 14px}.dv{padding:8px 0;border-top:1px dashed var(--bd)}.mono{font-family:ui-monospace,Menlo,monospace}
+.warn{color:#b54708;font-size:13px;margin:4px 0}.warn2{background:#fff4e5;color:#7a2e0e;border-color:#f59e0b}
+.lg{display:flex;gap:8px;padding:8px 0;border-top:1px solid var(--bd);font-size:14px}.lg:first-of-type{border:0}.lg time{color:var(--mut);white-space:nowrap;font-size:12px;min-width:92px}
+details>summary{cursor:pointer;list-style:none}details>summary::-webkit-details-marker{display:none}details[open]>summary{margin-bottom:8px}
+.pw{position:relative}.pw input{padding-right:52px}.eye{position:absolute;right:2px;top:5px;background:none;color:var(--mut);min-height:44px;padding:0 12px}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--bd);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+.tabs button{flex:1;background:none;color:var(--mut);border-radius:0;min-height:58px;font-size:12px;position:relative;display:flex;flex-direction:column;align-items:center;padding:6px 0;font-weight:600}.tabs button.on{color:var(--pri)}.tabs button span{font-size:20px;line-height:1.1}
+.dot{position:absolute;top:4px;left:calc(50% + 6px);background:#d92d20;color:#fff;border-radius:99px;font-size:10px;font-style:normal;padding:0 5px}
+#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:#14213d;color:#fff;padding:10px 16px;border-radius:12px;max-width:90vw;opacity:0;pointer-events:none;transition:.25s;z-index:30;font-size:14px;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}#toast.er{background:#d92d20}
+#sheet{display:none}#sheet.on{display:block}
+.shbg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20}
+.shc{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));z-index:21;max-width:560px;margin:0 auto}
 .gate{text-align:center;padding:70px 20px}.gate .ico{font-size:56px}
+.up{text-transform:uppercase}
 @media (max-width:380px){.stats{gap:6px}.row>*{min-width:100%}.pass{padding:14px}}
 @media (min-width:900px){.wrap{max-width:860px}.stat b{font-size:38px}}
-</style></head><body><div class="wrap" id="app"><p class="mut">Loading…</p></div>
+</style></head><body><div class="wrap" id="app"><p class="mut">Loading…</p></div><div id="toast"></div><div id="sheet"></div>
 <script>
 const MOBILE=!!((navigator.userAgentData&&navigator.userAgentData.mobile)||/Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent));
 /* >>> OFFICIAL LOGO: paste your own logo file as a data URL or image link between the quotes <<< */
 const LOGO="";
-const brand=()=>(LOGO?'<img class="logo" src="'+LOGO.replace(/"/g,'')+'" alt="">':'📱 ')+'Mobile Pass K4';
-const gateHtml=()=>'<div class="card gate"><div class="ico">📱</div><h2>Mobile only</h2><p class="mut">Passes can be used on mobile phones only. Please open this link on your phone. (Admins can use a computer.)</p><button class="s" onclick="logout()">Log out</button></div>';
-function startApp(){
-  if(!API_URL){document.getElementById('app').innerHTML='<div class="card err">Setup needed: paste your API link into this file (see README).</div>';return}
-  load(true);setInterval(()=>{if(!document.hidden)load()},15000);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()})}
-let users={},me=null,hasUsers=true,off=0,tick=null,msg='',loaded=false,last='';
-let tok=null;try{tok=localStorage.getItem('k4t')}catch(e){}
-const sv=v=>{tok=v;try{v?localStorage.setItem('k4t',v):localStorage.removeItem('k4t')}catch(e){}};
-const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const now=()=>Date.now()+off,cur=()=>me&&users[me]?{id:me,...users[me]}:null;
-const isExp=u=>u.passType==='temp'&&u.expiry&&now()>=u.expiry;
-const fmt=ms=>{if(ms<=0)return'00:00:00';const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return(d?d+'d ':'')+[h,m,s%60].map(x=>String(x).padStart(2,'0')).join(':')};
-const dt=ms=>new Date(ms).toLocaleString([],{dateStyle:'medium',timeStyle:'short'});
 /* >>> PASTE YOUR API LINK (Cloudflare Worker URL) between the quotes <<< */
 const API_URL="https://k4-api.sunil-behera-74e.workers.dev";
+
+const $=s=>document.querySelector(s),g=id=>document.getElementById(id),val=id=>g(id)?g(id).value:'';
+const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const brand=()=>(LOGO?'<img class="logo" src="'+LOGO.replace(/"/g,'')+'" alt="">':'📱 ')+'Mobile Pass K4';
+
+/* ---------- languages (login + user screens) ---------- */
+const LANGS={en:'English',hi:'हिन्दी',or:'ଓଡ଼ିଆ'};
+const TX={
+en:{id:'Login ID',pin:'PIN / Password',go:'Continue',login:'Login',newPin:'Create your PIN',newPin2:'Confirm PIN',code:'Verification code (last 4 digits of your mobile number)',savePin:'Save PIN & Enter',forgot:'Forgot PIN?',sent:'Request sent. Your admin must approve it. Then come back here and set a new PIN.',waiting:'Waiting for your admin to approve the PIN reset.',again:'Check again',notyet:'Not approved yet.',back:'Back',change:'Change',logout:'Log out',firstTime:'Your admin added you. Create your own PIN now.',
+noPass:'No pass approved yet',noPassSub:'Ask an Admin to approve your Mobile Pass. This screen updates automatically.',tempL:'TEMPORARY',permL:'PERMANENT',tempT:'Temporary Mobile Pass',permT:'Permanent Mobile Pass',passOf:'Pass {0} of {1}',upto:'Validity upto',validity:'Validity',perm:'Permanent ✔',appr:'Approved by',holder:'Holder',dev:'Device',imei:'IMEI',mob:'Mobile No.',plat:'Platform',addFor:'Add device for Pass {0}',model:'Phone model',imeiPh:'IMEI (15 digits, dial *#06#)',numPh:'Mobile number (optional)',save:'Save device',help:'Dial *#06# on the phone to see its IMEI. Web pages cannot read IMEI automatically.',exp:'EXPIRED',expN:'Pass expired.',low:'Your temporary pass ends in',lost:'Lost / changed phone',lostQ:'Ask your admin to remove this device so you can register another one?',lostSent:'Request sent to admin',mobOnly:'Mobile only',mobTxt:'Passes can be used on mobile phones only. Please open this link on your phone. (Admins can use a computer.)',lang:'Language',wrongPin:'Wrong ID or PIN.',pinMatch:'PINs do not match.',pinLen:'PIN must be at least 4 characters.',needId:'Enter your Login ID.',enterModel:'Enter phone model.',imeiBad:'Invalid IMEI. It must be 15 digits (dial *#06#).',yes:'Yes',cancel:'Cancel',install:'Tip: use your browser menu → "Add to Home screen" to install this app.'},
+hi:{id:'लॉगिन आईडी',pin:'पिन / पासवर्ड',go:'आगे बढ़ें',login:'लॉगिन',newPin:'अपना पिन बनाएँ',newPin2:'पिन दोबारा लिखें',code:'सत्यापन कोड (आपके मोबाइल नंबर के अंतिम 4 अंक)',savePin:'पिन सेव करें और प्रवेश करें',forgot:'पिन भूल गए?',sent:'अनुरोध भेज दिया गया। एडमिन की मंज़ूरी के बाद यहाँ वापस आकर नया पिन बनाएँ।',waiting:'एडमिन की मंज़ूरी का इंतज़ार है।',again:'फिर जाँचें',notyet:'अभी मंज़ूरी नहीं मिली।',back:'वापस',change:'बदलें',logout:'लॉग आउट',firstTime:'एडमिन ने आपको जोड़ा है। अब अपना पिन बनाएँ।',
+noPass:'अभी कोई पास मंज़ूर नहीं है',noPassSub:'अपना मोबाइल पास मंज़ूर कराने के लिए एडमिन से कहें। यह स्क्रीन अपने-आप अपडेट होती है।',tempL:'अस्थायी',permL:'स्थायी',tempT:'अस्थायी मोबाइल पास',permT:'स्थायी मोबाइल पास',passOf:'पास {0} / {1}',upto:'वैधता तक',validity:'वैधता',perm:'स्थायी ✔',appr:'मंज़ूरीकर्ता',holder:'धारक',dev:'डिवाइस',imei:'IMEI',mob:'मोबाइल नं.',plat:'प्लेटफ़ॉर्म',addFor:'पास {0} के लिए डिवाइस जोड़ें',model:'फ़ोन मॉडल',imeiPh:'IMEI (15 अंक, *#06# डायल करें)',numPh:'मोबाइल नंबर (वैकल्पिक)',save:'डिवाइस सेव करें',help:'IMEI देखने के लिए फ़ोन पर *#06# डायल करें। वेब पेज IMEI अपने-आप नहीं पढ़ सकते।',exp:'समाप्त',expN:'पास समाप्त हो गया।',low:'आपका अस्थायी पास समाप्त होने में',lost:'फ़ोन खोया / बदला',lostQ:'क्या एडमिन से यह डिवाइस हटवाना चाहते हैं ताकि दूसरा जोड़ सकें?',lostSent:'एडमिन को अनुरोध भेजा गया',mobOnly:'केवल मोबाइल',mobTxt:'पास केवल मोबाइल फ़ोन पर चलते हैं। कृपया यह लिंक अपने फ़ोन पर खोलें। (एडमिन कंप्यूटर इस्तेमाल कर सकते हैं।)',lang:'भाषा',wrongPin:'आईडी या पिन गलत है।',pinMatch:'पिन मेल नहीं खाते।',pinLen:'पिन कम से कम 4 अक्षर का हो।',needId:'अपनी लॉगिन आईडी लिखें।',enterModel:'फ़ोन मॉडल लिखें।',imeiBad:'अमान्य IMEI। यह 15 अंकों का होना चाहिए (*#06# डायल करें)।',yes:'हाँ',cancel:'रद्द करें',install:'सुझाव: ब्राउज़र मेनू → "होम स्क्रीन पर जोड़ें" से इस ऐप को इंस्टॉल करें।'},
+or:{id:'ଲଗଇନ୍ ଆଇଡି',pin:'ପିନ୍ / ପାସୱାର୍ଡ',go:'ଆଗକୁ',login:'ଲଗଇନ୍',newPin:'ନିଜର ପିନ୍ ତିଆରି କରନ୍ତୁ',newPin2:'ପିନ୍ ପୁଣି ଲେଖନ୍ତୁ',code:'ଯାଞ୍ଚ କୋଡ୍ (ଆପଣଙ୍କ ମୋବାଇଲ୍ ନମ୍ବରର ଶେଷ ୪ ଅଙ୍କ)',savePin:'ପିନ୍ ସେଭ୍ କରି ପ୍ରବେଶ କରନ୍ତୁ',forgot:'ପିନ୍ ଭୁଲିଗଲେ?',sent:'ଅନୁରୋଧ ପଠାଗଲା। ଆଡମିନ୍ ଅନୁମୋଦନ କଲାପରେ ଏଠାକୁ ଫେରି ନୂଆ ପିନ୍ ସେଟ୍ କରନ୍ତୁ।',waiting:'ଆଡମିନ୍ଙ୍କ ଅନୁମୋଦନ ପାଇଁ ଅପେକ୍ଷା।',again:'ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ',notyet:'ଏପର୍ଯ୍ୟନ୍ତ ଅନୁମୋଦନ ହୋଇନାହିଁ।',back:'ପଛକୁ',change:'ବଦଳାନ୍ତୁ',logout:'ଲଗ୍ ଆଉଟ୍',firstTime:'ଆଡମିନ୍ ଆପଣଙ୍କୁ ଯୋଡିଛନ୍ତି। ଏବେ ନିଜର ପିନ୍ ତିଆରି କରନ୍ତୁ।',
+noPass:'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ପାସ୍ ଅନୁମୋଦିତ ନାହିଁ',noPassSub:'ଆପଣଙ୍କ ମୋବାଇଲ୍ ପାସ୍ ଅନୁମୋଦନ ପାଇଁ ଆଡମିନ୍ଙ୍କୁ କୁହନ୍ତୁ। ଏହି ସ୍କ୍ରିନ୍ ନିଜେ ନିଜେ ଅପଡେଟ୍ ହୁଏ।',tempL:'ଅସ୍ଥାୟୀ',permL:'ସ୍ଥାୟୀ',tempT:'ଅସ୍ଥାୟୀ ମୋବାଇଲ୍ ପାସ୍',permT:'ସ୍ଥାୟୀ ମୋବାଇଲ୍ ପାସ୍',passOf:'ପାସ୍ {0} / {1}',upto:'ବୈଧତା ପର୍ଯ୍ୟନ୍ତ',validity:'ବୈଧତା',perm:'ସ୍ଥାୟୀ ✔',appr:'ଅନୁମୋଦକ',holder:'ଧାରକ',dev:'ଡିଭାଇସ୍',imei:'IMEI',mob:'ମୋବାଇଲ୍ ନଂ.',plat:'ପ୍ଲାଟଫର୍ମ',addFor:'ପାସ୍ {0} ପାଇଁ ଡିଭାଇସ୍ ଯୋଡନ୍ତୁ',model:'ଫୋନ୍ ମଡେଲ୍',imeiPh:'IMEI (୧୫ ଅଙ୍କ, *#06# ଡାଏଲ୍ କରନ୍ତୁ)',numPh:'ମୋବାଇଲ୍ ନମ୍ବର (ଇଚ୍ଛାଧୀନ)',save:'ଡିଭାଇସ୍ ସେଭ୍ କରନ୍ତୁ',help:'IMEI ଦେଖିବାକୁ ଫୋନରେ *#06# ଡାଏଲ୍ କରନ୍ତୁ। ୱେବ୍ ପେଜ୍ ନିଜେ IMEI ପଢ଼ିପାରେ ନାହିଁ।',exp:'ମିଆଦ ସରିଲା',expN:'ପାସ୍ ର ମିଆଦ ସରିଯାଇଛି।',low:'ଆପଣଙ୍କ ଅସ୍ଥାୟୀ ପାସ୍ ସରିବାକୁ ବାକି',lost:'ଫୋନ୍ ହଜିଲା / ବଦଳିଲା',lostQ:'ଅନ୍ୟ ଫୋନ୍ ଯୋଡିବା ପାଇଁ ଆଡମିନ୍ଙ୍କୁ ଏହି ଡିଭାଇସ୍ ହଟାଇବାକୁ କହିବେ?',lostSent:'ଆଡମିନ୍ଙ୍କୁ ଅନୁରୋଧ ପଠାଗଲା',mobOnly:'କେବଳ ମୋବାଇଲ୍',mobTxt:'ପାସ୍ କେବଳ ମୋବାଇଲ୍ ଫୋନରେ ଚାଲେ। ଦୟାକରି ଏହି ଲିଙ୍କ୍ ଆପଣଙ୍କ ଫୋନରେ ଖୋଲନ୍ତୁ। (ଆଡମିନ୍ କମ୍ପ୍ୟୁଟର ବ୍ୟବହାର କରିପାରିବେ।)',lang:'ଭାଷା',wrongPin:'ଆଇଡି କିମ୍ବା ପିନ୍ ଭୁଲ୍।',pinMatch:'ପିନ୍ ମେଳ ଖାଉନାହିଁ।',pinLen:'ପିନ୍ ଅତି କମରେ ୪ ଅକ୍ଷର ହେବା ଉଚିତ।',needId:'ଆପଣଙ୍କ ଲଗଇନ୍ ଆଇଡି ଲେଖନ୍ତୁ।',enterModel:'ଫୋନ୍ ମଡେଲ୍ ଲେଖନ୍ତୁ।',imeiBad:'ଅବୈଧ IMEI। ଏହା ୧୫ ଅଙ୍କର ହେବା ଉଚିତ (*#06# ଡାଏଲ୍ କରନ୍ତୁ)।',yes:'ହଁ',cancel:'ବାତିଲ୍',install:'ସୂଚନା: ବ୍ରାଉଜର୍ ମେନୁ → "ହୋମ୍ ସ୍କ୍ରିନ୍‌ରେ ଯୋଡନ୍ତୁ" ଦ୍ୱାରା ଏହି ଆପ୍ ଇନଷ୍ଟଲ୍ କରନ୍ତୁ।'}};
+let lang='en';try{lang=localStorage.getItem('k4l')||'en'}catch(e){}if(!LANGS[lang])lang='en';
+const t=(k,...a)=>{let s=(TX[lang]&&TX[lang][k])||TX.en[k]||k;a.forEach((v,i)=>s=s.replace('{'+i+'}',v));return s};
+const langSel=()=>`<select class="lang" onchange="setLang(this.value)" aria-label="${t('lang')}">${Object.entries(LANGS).map(([k,n])=>`<option value="${k}"${k===lang?' selected':''}>${n}</option>`).join('')}</select>`;
+function setLang(v){lang=v;try{localStorage.setItem('k4l',v)}catch(e){}document.documentElement.lang=v;render()}
+function applyTheme(){let v=null;try{v=localStorage.getItem('k4th')}catch(e){}if(v)document.documentElement.dataset.theme=v;else delete document.documentElement.dataset.theme}
+function toggleTheme(){const dark=matchMedia('(prefers-color-scheme:dark)').matches,cur=document.documentElement.dataset.theme||(dark?'dark':'light'),nx=cur==='dark'?'light':'dark';try{localStorage.setItem('k4th',nx)}catch(e){}applyTheme()}
+
+/* ---------- state + API ---------- */
+let users={},logs=[],settings=null,me=null,hasUsers=true,off=0,tick=null,loaded=false,last='',lastOk=0,offline=false,pending='';
+let tab='home',filter='all',q='',open=null,lg={step:'id',id:'',needsCode:false,sent:false};
+let tok=null;try{tok=localStorage.getItem('k4t')}catch(e){}
+const sv=v=>{tok=v;try{v?localStorage.setItem('k4t',v):localStorage.removeItem('k4t')}catch(e){}};
+const now=()=>Date.now()+off,cur=()=>me&&users[me]?{id:me,...users[me]}:null;
+const isExp=u=>u.passType==='temp'&&u.expiry&&now()>=u.expiry;
+const exp24=u=>u.passType==='temp'&&u.expiry&&!isExp(u)&&u.expiry-now()<864e5;
+const fmt=ms=>{if(ms<=0)return'00:00:00';const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return(d?d+'d ':'')+[h,m,s%60].map(x=>String(x).padStart(2,'0')).join(':')};
+const dt=ms=>new Date(ms).toLocaleString([],{dateStyle:'medium',timeStyle:'short'});
+const luhn=s=>{if(!/^\d{15}$/.test(s))return false;let n=0;for(let i=0;i<15;i++){let x=+s[14-i];if(i%2){x*=2;if(x>9)x-=9}n+=x}return n%10===0};
 async function api(fn,a={}){
   let r;try{r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({fn,a})})}catch(e){throw new Error('No internet connection.')}
   const j=await r.json().catch(()=>null);if(!j)throw new Error('Server error ('+r.status+')');
   if(!j.ok)throw new Error(j.error);return j.data}
+const updTxt=()=>offline?'Offline – showing last data':lastOk?'Updated '+new Date(lastOk).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
 async function load(force){
-  if(!force&&loaded&&['INPUT','SELECT'].includes(document.activeElement.tagName))return;
+  if(!force&&loaded&&['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;
   try{
-    if(tok){const r=await api('k4_get',{p_token:tok});off=r.now-Date.now();me=r.me;users=r.users;hasUsers=true}
-    else{hasUsers=await api('k4_state');users={};me=null}
+    if(tok){const r=await api('k4_get',{p_token:tok});off=r.now-Date.now();me=r.me;users=r.users;logs=r.log||[];settings=r.settings;hasUsers=true}
+    else if(!loaded||force){hasUsers=await api('k4_state');users={};me=null;logs=[]}
+    lastOk=Date.now();offline=false;
   }catch(e){
-    if(tok&&/Session/.test(e.message)){sv(null);msg='Session expired. Please log in.';return load(true)}
-    if(!loaded)$('#app').innerHTML='<div class="card err">Cannot reach the database: '+E(e.message)+'</div>';return}
-  const sig=JSON.stringify([users,hasUsers,me]);if(loaded&&sig===last)return;last=sig;loaded=true;render()}
+    if(tok&&/Session expired|account was removed/.test(e.message)){sv(null);pending=e.message;last='';return load(true)}
+    if(!loaded){$('#app').innerHTML='<div class="card err">Cannot reach the database: '+E(e.message)+'</div>';return}
+    offline=true;const el=g('upd');if(el)el.textContent=updTxt();return}
+  const el=g('upd');if(el)el.textContent=updTxt();
+  const sig=JSON.stringify([users,hasUsers,me,settings,logs,Math.floor(now()/6e4)]);if(loaded&&sig===last)return;last=sig;loaded=true;render()}
+async function refresh(){await load(true);toast('Up to date')}
+async function act(fn,a,ok){try{const r=await api(fn,{p_token:tok,...a});await load(true);if(ok)toast(ok);return r}
+  catch(e){if(/Session expired|account was removed/.test(e.message)){sv(null);pending=e.message;last='';return load(true)}toast(e.message,true)}}
+
+/* ---------- small UI helpers ---------- */
+let tt;function toast(m,err){const e=g('toast');e.textContent=m;e.className='on'+(err?' er':'');clearTimeout(tt);tt=setTimeout(()=>e.className='',3400)}
+let _res=null;
+function ask(title,text,ok,danger,cancel){return new Promise(r=>{_res=r;const s=g('sheet');
+  s.innerHTML=`<div class="shbg" onclick="ans(false)"></div><div class="shc"><h3>${E(title)}</h3><p class="mut">${E(text||'')}</p><div class="row"><button class="s" onclick="ans(false)">${E(cancel||'Cancel')}</button><button class="${danger?'d':''}" onclick="ans(true)">${E(ok||'Confirm')}</button></div></div>`;s.className='on'})}
+function ans(v){g('sheet').className='';if(_res){_res(v);_res=null}}
+function cp(s){try{navigator.clipboard.writeText(s).then(()=>toast('Copied'),()=>toast('Copy failed',true))}catch(e){toast('Copy failed',true)}}
+function eye(id){const i=g(id);i.type=i.type==='password'?'text':'password'}
+const pw=(id,ph,ac)=>`<div class="pw"><input id="${id}" type="password" placeholder="${E(ph)}" autocomplete="${ac||'current-password'}"><button type="button" class="eye" onclick="eye('${id}')" aria-label="Show">👁</button></div>`;
+const ent=fn=>`onkeydown="if(event.key==='Enter'){${fn}}"`;
+const idIn=(id,v,fn)=>`<input id="${id}" class="up" autocapitalize="characters" autocomplete="username" spellcheck="false" value="${E(v||'')}" oninput="this.value=this.value.toUpperCase()" ${fn?ent(fn):''}>`;
+const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+
+/* ---------- render ---------- */
 function render(){
-  clearInterval(tick);const u=cur();
-  if(!u){$('#app').innerHTML=(msg?`<div class="card err">${E(msg)}</div>`:'')+loginView();msg='';return}
-  if(!MOBILE&&u.role!=='admin'){$('#app').innerHTML=gateHtml();return}
-  $('#app').innerHTML=`<header><h1>${brand()}</h1><div><span class="mut">${E(u.name)}</span><span class="badge">${u.role==='admin'?'Admin':'User'}</span></div></header>
-  ${msg?`<div class="card err">${E(msg)}</div>`:''}`+(u.role==='admin'?adminView(u):userView(u))+`<div class="row" style="margin-top:8px"><button class="s" onclick="logout()">Log out</button></div>`;
-  msg='';tick=setInterval(updClocks,1000);updClocks()}
-async function act(fn,a){try{await api(fn,{p_token:tok,...a});await load(true)}catch(e){msg=e.message;render()}}
+  clearInterval(tick);const u=cur();document.body.classList.toggle('adm',!!u&&u.role==='admin');
+  if(!u){$('#app').innerHTML=loginView()}
+  else if(!MOBILE&&u.role!=='admin'){$('#app').innerHTML=`<header><h1>${brand()}</h1>${langSel()}</header><div class="card gate"><div class="ico">📱</div><h2>${t('mobOnly')}</h2><p class="mut">${t('mobTxt')}</p><button class="s" onclick="logout()">${t('logout')}</button></div>`}
+  else{const A=u.role==='admin';
+    $('#app').innerHTML=`<header><h1>${brand()}</h1><div class="hr"><span class="mut">${E(u.name)}</span><span class="badge">${A?'Admin':'User'}</span>${A?'':langSel()}<button class="ib" onclick="toggleTheme()" aria-label="Theme">🌓</button></div></header>
+    <div class="mut" style="margin-bottom:10px"><span id="upd">${updTxt()}</span> <button class="lnk" onclick="refresh()">⟳ Refresh</button></div>`
+    +(A?adminView(u)+tabBar():userView(u)+`<div class="row" style="margin-top:8px"><button class="s" onclick="logout()">${t('logout')}</button></div>`);
+    tick=setInterval(updClocks,1000);updClocks()}
+  if(pending){toast(pending,true);pending=''}}
+function updClocks(){const n=now();
+  document.querySelectorAll('.clock,.lt').forEach(c=>{const l=+c.dataset.exp-n;c.textContent=l>0?fmt(l):(c.classList.contains('clock')?t('exp'):'0');
+    if(l<=0&&!c.dataset.done){c.dataset.done=1;setTimeout(()=>{last='';load(true)},800)}});
+  document.querySelectorAll('.nowc').forEach(c=>c.textContent=new Date(n).toLocaleTimeString())}
+
+/* ---------- LOGIN / SETUP / PIN FLOWS ---------- */
+const lerr=m=>{const e=g('le');if(e)e.textContent=m};
+const toStep=(s,x)=>{lg={...lg,step:s,...x};render()};
 function loginView(){
-  const first=!hasUsers;
-  return `<header><h1>${brand()}</h1></header><div class="card">
-  <h2 style="margin-top:0">${first?'First-time setup: create Admin':'Login'}</h2>
-  ${first?'<label>Your name</label><input id="nm" placeholder="Full name">':''}
-  <label>Login ID</label><input id="lid" autocapitalize="none" placeholder="e.g. rahul01">
-  <label>PIN / Password</label><input id="pw" type="password" placeholder="PIN">
-  <div class="err" id="le"></div>
-  <button style="width:100%" onclick="${first?'setup()':'login()'}">${first?'Create Admin & Enter':'Login'}</button>
-  <p class="mut">Only users added by an Admin can log in. Users: mobile only. Admins: phone or computer.</p></div>`;
+  const head=`<header><h1>${brand()}</h1>${langSel()}</header>`;
+  if(!hasUsers)return head+`<div class="card"><h2 style="margin-top:0">First-time setup: create Admin</h2>
+    <label>Your name</label><input id="nm" autocapitalize="words" placeholder="Full name"><label>${t('id')}</label>${idIn('lid','')}
+    <label>${t('pin')}</label>${pw('pw','PIN (min 4)','new-password')}<label>${t('newPin2')}</label>${pw('pw2','PIN','new-password')}
+    <div class="err" id="le"></div><button style="width:100%" onclick="setup()">Create Admin & Enter</button></div>`;
+  if(lg.step==='login')return head+`<div class="card"><h2 style="margin-top:0">${t('login')}</h2><p><b>${E(lg.id)}</b> <button class="lnk" onclick="toStep('id')">${t('change')}</button></p>
+    <label>${t('pin')}</label>${pw('pw',t('pin'))}<div class="err" id="le"></div><button style="width:100%" onclick="doLogin()">${t('login')}</button>
+    <p style="text-align:center"><button class="lnk" onclick="forgot()">${t('forgot')}</button></p></div>`;
+  if(lg.step==='set')return head+`<div class="card"><h2 style="margin-top:0">${t('newPin')}</h2><p class="mut">${t('firstTime')}</p><p><b>${E(lg.id)}</b> <button class="lnk" onclick="toStep('id')">${t('change')}</button></p>
+    ${lg.needsCode?`<label>${t('code')}</label><input id="vc" inputmode="numeric" maxlength="4" autocomplete="off">`:''}
+    <label>${t('pin')}</label>${pw('pw',t('pin'),'new-password')}<label>${t('newPin2')}</label>${pw('pw2',t('newPin2'),'new-password')}
+    <div class="err" id="le"></div><button style="width:100%" onclick="setPin()">${t('savePin')}</button></div>`;
+  if(lg.step==='wait')return head+`<div class="card"><h2 style="margin-top:0">${t('forgot')}</h2><p><b>${E(lg.id)}</b></p><p>${lg.sent?t('sent'):t('waiting')}</p>
+    <div class="row"><button class="s" onclick="toStep('id',{sent:false})">${t('back')}</button><button onclick="recheck()">${t('again')}</button></div></div>`;
+  if(lg.step==='recover')return head+`<div class="card"><h2 style="margin-top:0">Admin recovery</h2><p class="mut">Only for the owner. Enter the RECOVERY_KEY saved in Cloudflare, then choose a new PIN.</p>
+    <label>${t('id')}</label>${idIn('lid',lg.id)}<label>Recovery key</label>${pw('rk','Recovery key','off')}<label>New PIN</label>${pw('pw','New PIN','new-password')}
+    <div class="err" id="le"></div><div class="row"><button class="s" onclick="toStep('id')">${t('back')}</button><button onclick="recover()">Reset &amp; Enter</button></div></div>`;
+  return head+`<div class="card"><h2 style="margin-top:0">${t('login')}</h2><label>${t('id')}</label>${idIn('lid',lg.id,'nextId()')}
+    <div class="err" id="le"></div><button style="width:100%" onclick="nextId()">${t('go')}</button>
+    <p class="mut" style="text-align:center;margin-bottom:0">Only users added by an Admin can log in.<br><button class="lnk" onclick="toStep('recover')">Admin locked out?</button></p></div>`;
 }
-async function login(){try{const t=await api('k4_login',{p_id:$('#lid').value,p_pin:$('#pw').value});
-  if(!t)return $('#le').textContent='Wrong ID or PIN (5 wrong tries lock the ID for 15 minutes).';sv(t);await load(true)}catch(e){$('#le').textContent=e.message}}
-async function setup(){try{const t=await api('k4_setup',{p_id:$('#lid').value,p_name:$('#nm').value,p_pin:$('#pw').value});sv(t);await load(true)}catch(e){$('#le').textContent=e.message}}
-async function logout(){try{await api('k4_logout',{p_token:tok})}catch(e){}sv(null);me=null;users={};last='';load(true)}
+async function nextId(){const id=val('lid').trim().toUpperCase();if(!id)return lerr(t('needId'));
+  try{const r=await api('k4_check',{p_id:id});toStep(r.s==='set'?'set':r.waiting?'wait':'login',{id,needsCode:!!r.needsCode,sent:false})}catch(e){lerr(e.message)}}
+async function doLogin(){try{const tk=await api('k4_login',{p_id:lg.id,p_pin:val('pw')});if(!tk)return lerr(t('wrongPin'));
+  sv(tk);lg={step:'id',id:'',needsCode:false,sent:false};await load(true)}catch(e){lerr(e.message)}}
+async function forgot(){try{await api('k4_forgot',{p_id:lg.id});toStep('wait',{sent:true})}catch(e){lerr(e.message)}}
+async function recheck(){try{const r=await api('k4_check',{p_id:lg.id});if(r.s==='set')toStep('set',{needsCode:!!r.needsCode});else toast(t('notyet'),true)}catch(e){toast(e.message,true)}}
+async function setPin(){const p=val('pw'),p2=val('pw2');if(p.length<4)return lerr(t('pinLen'));if(p!==p2)return lerr(t('pinMatch'));
+  try{const tk=await api('k4_set_pin',{p_id:lg.id,p_pin:p,p_code:val('vc')});sv(tk);lg={step:'id',id:'',needsCode:false,sent:false};await load(true)}catch(e){lerr(e.message)}}
+async function setup(){const p=val('pw');if(p!==val('pw2'))return lerr(t('pinMatch'));
+  try{const tk=await api('k4_setup',{p_id:val('lid'),p_name:val('nm'),p_pin:p});sv(tk);await load(true)}catch(e){lerr(e.message)}}
+async function recover(){try{const tk=await api('k4_recover',{p_id:val('lid'),p_key:val('rk'),p_pin:val('pw')});sv(tk);lg={step:'id',id:'',needsCode:false,sent:false};await load(true)}catch(e){lerr(e.message)}}
+async function logout(){try{await api('k4_logout',{p_token:tok})}catch(e){}sv(null);me=null;users={};logs=[];last='';tab='home';open=null;load(true)}
+
 /* ---------- ADMIN ---------- */
-function adminView(a){
-  const L=Object.entries(users),T=L.filter(([,u])=>u.role!=='admin'&&u.passType==='temp'),P=L.filter(([,u])=>u.role!=='admin'&&u.passType==='perm');
-  const tot=L.reduce((n,[,u])=>n+(u.passType!=='none'&&u.role!=='admin'?+u.count||0:0),0);
-  return `<div class="stats"><div class="card stat"><b>${T.length}</b>Temporary users</div><div class="card stat"><b>${P.length}</b>Permanent users</div></div>
-  <div class="mut" style="margin:-4px 0 8px">Total passes allowed: ${tot} · Total users: ${L.length}</div>
+const U=()=>Object.entries(users).filter(([,u])=>u.role==='user');
+const devN=u=>(u.devices||[]).filter(Boolean).length;
+const resets=()=>Object.entries(users).filter(([,u])=>u.resetReq&&!u.resetOk);
+const okResets=()=>Object.entries(users).filter(([,u])=>u.resetOk);
+const devReqs=()=>U().flatMap(([id,u])=>Object.keys(u.devReq||{}).filter(i=>(u.devices||[])[i]).map(i=>[id,u,+i]));
+const waitingPass=()=>U().filter(([,u])=>u.passType==='none');
+const pendN=()=>resets().length+devReqs().length+waitingPass().length;
+const TABS=[['home','🏠','Home'],['users','👥','Users'],['req','🔔','Requests'],['log','📜','Log']];
+const tabBar=()=>`<nav class="tabs">${TABS.map(([k,i,n])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><span>${i}</span>${n}${k==='req'&&pendN()?`<i class="dot">${pendN()}</i>`:''}</button>`).join('')}</nav>`;
+function go(k,f){tab=k;if(f){filter=f;q=''}scrollTo(0,0);render()}
+function adminView(a){return tab==='users'?usersView(a):tab==='req'?reqView():tab==='log'?logView():homeView()}
+
+function homeView(){
+  const T=U().filter(([,u])=>u.passType==='temp'),P=U().filter(([,u])=>u.passType==='perm'),X=U().filter(([,u])=>exp24(u));
+  const tot=U().reduce((n,[,u])=>n+(u.passType!=='none'?+u.count||0:0),0),gr=settings?settings.grace:0;
+  return `<div class="stats"><div class="card stat tap" onclick="go('users','temp')"><b>${T.length}</b>Temporary users</div><div class="card stat tap" onclick="go('users','perm')"><b>${P.length}</b>Permanent users</div>
+  <div class="card stat tap" onclick="go('req')"><b>${pendN()}</b>Pending requests</div><div class="card stat tap" onclick="go('users','exp24')"><b>${X.length}</b>Expiring in 24h</div></div>
+  <div class="mut" style="margin:8px 0">Total passes allowed: ${tot} · Total users: ${Object.keys(users).length}</div>
   <div class="row"><button onclick="csv()">⬇ Download CSV</button></div>
-  <h2>Add user</h2><div class="card">
-  <label>Name</label><input id="an"><label>Login ID</label><input id="ai" autocapitalize="none"><label>PIN / Password</label><input id="ap">
-  <button style="width:100%" onclick="addUser()">Add user</button></div>
-  <h2>Users &amp; approvals</h2>`+L.map(([id,u])=>userCard(id,u,a)).join('');
+  <h2>Settings</h2><div class="card"><label>Keep expired temporary users visible as "Expired" for</label>
+  <select onchange="act('k4_settings',{p_grace:+this.value},'Saved')">${[[0,'No wait – remove immediately'],[6,'6 hours'],[12,'12 hours'],[24,'1 day'],[72,'3 days'],[168,'7 days']].map(([v,n])=>`<option value="${v}"${v===gr?' selected':''}>${n}</option>`).join('')}</select>
+  <div class="mut">After this time the temporary user is removed from the list automatically.</div></div>
+  ${standalone()?'':`<p class="mut">${t('install')}</p>`}`;
 }
-function userCard(id,u,a){
-  const adm=u.role==='admin',self=id===a.id;
+
+function usersView(){
+  const F=[['all','All'],['temp','Temporary'],['perm','Permanent'],['none','No pass'],['expired','Expired'],['exp24','Expiring 24h'],['admin','Admins']];
+  return `<details class="card"><summary><b>➕ Add users</b></summary>
+  <label>Name</label><input id="an" autocapitalize="words" autocomplete="off"><label>Login ID</label>${idIn('ai','')}
+  <label>Verification code (last 4 digits of the user's mobile)</label><input id="ac" inputmode="numeric" maxlength="4" autocomplete="off">
+  <p class="mut">No PIN needed. The user opens the app, enters this ID and creates their own PIN. They must type the code above once.</p>
+  <button style="width:100%" onclick="addUser()">Add user</button>
+  <h2>Bulk add</h2><label>One user per line:  ID, Name, 4-digit code</label><textarea id="bt" placeholder="RAHUL01, rahul sharma, 4821&#10;AMIT22, amit kumar, 1190"></textarea>
+  <button style="width:100%" onclick="bulk()">Add all</button></details>
+  <input id="sq" type="search" placeholder="Search name or ID…" value="${E(q)}" oninput="q=this.value;g('ulist').innerHTML=ulist()">
+  <div class="chips">${F.map(([k,n])=>`<button class="chip${filter===k?' on':''}" onclick="setF('${k}')">${n}</button>`).join('')}</div><div id="ulist">${ulist()}</div>`;
+}
+function setF(k){filter=k;render()}
+function ulist(){
+  const ql=q.trim().toUpperCase(),ok={all:()=>true,admin:u=>u.role==='admin',temp:u=>u.role==='user'&&u.passType==='temp',perm:u=>u.role==='user'&&u.passType==='perm',
+    none:u=>u.role==='user'&&u.passType==='none',expired:u=>u.role==='user'&&isExp(u),exp24:u=>u.role==='user'&&exp24(u)}[filter];
+  const rows=Object.entries(users).filter(([id,u])=>ok(u)&&(!ql||id.includes(ql)||u.name.toUpperCase().includes(ql))).sort((x,y)=>(x[1].role==='admin'?0:1)-(y[1].role==='admin'?0:1)||x[1].name.localeCompare(y[1].name));
+  return `<div class="mut" style="margin:2px 0 8px">${rows.length} user(s)</div>`+(rows.length?rows.map(([id,u])=>row(id,u)).join(''):'<div class="card mut">No users here.</div>');
+}
+function row(id,u){
+  const adm=u.role==='admin',o=open===id,x=isExp(u);
   const tg=adm?'<span class="tag a">Admin</span>':u.passType==='temp'?'<span class="tag t">Temp</span>':u.passType==='perm'?'<span class="tag p">Permanent</span>':'';
-  let body='';
-  if(!adm){body=`<div class="row" style="margin-top:8px">
-    <select id="ty_${id}"><option value="temp" ${u.passType==='temp'?'selected':''}>Temporary pass</option><option value="perm" ${u.passType==='perm'?'selected':''}>Permanent pass</option></select>
-    <select id="n_${id}">${[1,2,3,4,5].map(n=>`<option ${n==(u.count||1)?'selected':''}>${n}</option>`).join('')}</select></div>
-    <label>Valid for (temporary only)</label><div class="row"><input id="d_${id}" type="number" min="0" placeholder="Days" value="0"><input id="h_${id}" type="number" min="0" placeholder="Hours" value="${u.passType==='temp'?0:24}"></div>
-    <div class="row"><button class="sm" onclick="approve('${id}')">${u.passType==='none'?'Approve':'Update'} pass</button>${u.passType!=='none'?`<button class="sm d" onclick="revoke('${id}')">Revoke</button>`:''}<button class="sm s" onclick="promote('${id}')">Make Admin</button><button class="sm s" onclick="delUser('${id}')">Delete</button></div>`;
-  } else body=`<div class="row" style="margin-top:6px">${self?`<button class="sm d" onclick="demote()">Demote myself to User</button>`:`<span class="mut">Admin</span>`}</div>`;
-  return `<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span>${tg}
-  ${!adm&&u.passType!=='none'?`<div class="mut">${u.count} pass(es) · ${(u.devices||[]).filter(Boolean).length} device(s) added${u.passType==='temp'?' · '+(isExp(u)?'EXPIRED':'until '+dt(u.expiry)):''}</div>`:''}${body}</div>`;
+  const fl=(u.resetReq&&!u.resetOk?'<span class="tag r">PIN reset?</span>':'')+(u.pinSet?'':'<span class="tag n">PIN not set</span>');
+  const sub=adm?'Admin':u.passType==='none'?'No pass yet':`${u.count} pass(es) · ${devN(u)}/${u.count} device(s)`+(u.passType==='temp'?' · '+(x?'EXPIRED':'until '+dt(u.expiry)):'');
+  return `<div class="card ur"><div class="uh" onclick="tg('${id}')"><div><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span>${tg}${fl}<div class="mut">${sub}</div></div><span class="chev">${o?'▾':'▸'}</span></div>${o?detail(id,u):''}</div>`;
 }
-function addUser(){act('k4_add_user',{p_id:$('#ai').value,p_name:$('#an').value,p_pin:$('#ap').value})}
-function approve(id){const t=$('#ty_'+id).value,hrs=(+$('#d_'+id).value*24)+ +$('#h_'+id).value;
-  if(t==='temp'&&hrs<=0)return alert('Enter validity days/hours for a temporary pass.');
-  act('k4_approve',{p_id:id,p_type:t,p_count:+$('#n_'+id).value,p_hours:hrs})}
-function revoke(id){if(confirm('Revoke pass?'))act('k4_revoke',{p_id:id})}
-function promote(id){if(confirm('Make '+users[id].name+' an Admin?'))act('k4_promote',{p_id:id})}
-function demote(){if(Object.values(users).filter(u=>u.role==='admin').length<2&&!confirm('You are the ONLY admin. After demotion nobody can manage the app. Continue?'))return;
-  if(confirm('Demote yourself to User? All admin powers will be lost.'))act('k4_demote',{})}
-function delUser(id){if(confirm('Delete '+users[id].name+'?'))act('k4_delete',{p_id:id})}
+function tg(id){open=open===id?null:id;g('ulist').innerHTML=ulist()}
+function detail(id,u){
+  if(u.role==='admin')return `<div class="row" style="margin-top:8px">${id===me?`<button class="sm d" onclick="demote()">Demote myself to User</button>`:`<button class="sm s" onclick="delUser('${id}')">Delete admin</button>`}</div>`;
+  let dv='';for(let i=0;i<u.count;i++){const d=(u.devices||[])[i];
+    dv+=`<div class="dv"><b>Pass ${i+1}</b> `+(d?`<div>📱 ${E(d.model)}</div><div class="mut">IMEI <span class="mono">${E(d.imei)}</span> <button class="lnk" onclick="cp('${E(d.imei)}')">copy</button></div><div class="mut">Mobile ${E(d.num||'-')} · ${E(d.os||'-')}</div>${(u.devReq||{})[i]?'<div class="warn">⚠ User asked to change this device</div>':''}<button class="sm d" style="margin-top:6px" onclick="rmDev('${id}',${i})">Remove device</button>`:'<span class="mut">– no device registered yet</span>')+'</div>'}
+  const tmp=u.passType!=='perm';
+  return `<div style="margin-top:8px">${u.count?`<h2 style="margin:6px 0">Registered devices</h2>${dv}`:''}
+  <h2 style="margin:12px 0 6px">Pass settings</h2>
+  <div class="row"><select id="ty_${id}" onchange="g('tf_${id}').style.display=this.value==='temp'?'':'none'"><option value="temp"${u.passType!=='perm'?' selected':''}>Temporary pass</option><option value="perm"${u.passType==='perm'?' selected':''}>Permanent pass</option></select>
+  <select id="n_${id}">${[1,2,3,4,5].map(n=>`<option value="${n}"${n==(u.count||1)?' selected':''}>${n} pass${n>1?'es':''}</option>`).join('')}</select></div>
+  <div id="tf_${id}" style="display:${tmp?'':'none'}"><label>Valid for (temporary only)</label><div class="row"><input id="d_${id}" type="number" min="0" placeholder="Days" value="1"><input id="h_${id}" type="number" min="0" placeholder="Hours" value="0"></div></div>
+  <div class="row"><button class="sm" onclick="approve('${id}')">${u.passType==='none'?'Approve':'Update'} pass</button>${u.passType!=='none'?`<button class="sm d" onclick="revoke('${id}')">Revoke</button>`:''}</div>
+  ${u.passType==='temp'?`<div class="row" style="margin-top:8px"><button class="sm s" onclick="ext('${id}',24)">+1 day</button><button class="sm s" onclick="ext('${id}',168)">+1 week</button></div>`:''}
+  <div class="row" style="margin-top:8px"><button class="sm s" onclick="promote('${id}')">Make Admin</button><button class="sm s" onclick="delUser('${id}')">Delete</button></div></div>`;
+}
+function addUser(){act('k4_add_user',{p_id:val('ai'),p_name:val('an'),p_code:val('ac')},'User added')}
+async function bulk(){const r=await act('k4_bulk_add',{p_text:val('bt')});if(r)toast(`Added ${r.added}${r.skipped.length?', skipped '+r.skipped.length+' ('+r.skipped.slice(0,2).join('; ')+')':''}`,!r.added&&r.skipped.length>0)}
+function approve(id){const ty=val('ty_'+id),hrs=(+val('d_'+id)||0)*24+(+val('h_'+id)||0);
+  if(ty==='temp'&&!(hrs>0))return toast('Enter validity days/hours for a temporary pass.',true);
+  act('k4_approve',{p_id:id,p_type:ty,p_count:+val('n_'+id),p_hours:hrs},'Pass saved')}
+async function revoke(id){if(await ask('Revoke pass?',users[id].name+' will lose the pass and registered devices.','Revoke',true))act('k4_revoke',{p_id:id},'Pass revoked')}
+function ext(id,h){act('k4_extend',{p_id:id,p_hours:h},'Extended')}
+async function promote(id){if(await ask('Make Admin?',users[id].name+' will get full admin powers and lose any pass.','Make Admin'))act('k4_promote',{p_id:id},'Now an admin')}
+async function demote(){if(await ask('Demote yourself?','All your admin powers will be lost.','Demote',true))act('k4_demote',{},'You are now a user')}
+async function delUser(id){if(await ask('Delete '+users[id].name+'?','This removes the user and logs them out.','Delete',true)){if(open===id)open=null;act('k4_delete',{p_id:id},'Deleted')}}
+async function rmDev(id,i){if(await ask('Remove device?',(users[id].devices[i]||{}).model+' will be cleared so the user can register another phone.','Remove',true))act('k4_remove_device',{p_id:id,p_idx:i},'Device removed')}
+
+function reqView(){
+  const R=resets(),O=okResets(),D=devReqs(),W=waitingPass();
+  return `<h2 style="margin-top:4px">PIN reset requests</h2>`+(R.length||O.length?R.map(([id,u])=>`<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span><div class="mut">Requested ${dt(u.resetReq)}</div><div class="row" style="margin-top:6px"><button class="sm" onclick="act('k4_reset_ok',{p_id:'${id}'},'Approved – user has 1 hour to set a new PIN')">Approve</button><button class="sm s" onclick="act('k4_reset_deny',{p_id:'${id}'},'Denied')">Deny</button></div></div>`).join('')
+    +O.map(([id,u])=>`<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span><div class="mut">Approved – user must set the new PIN before ${dt(u.resetOkAt+36e5)}</div><div class="row" style="margin-top:6px"><button class="sm s" onclick="act('k4_reset_deny',{p_id:'${id}'},'Cancelled')">Cancel approval</button></div></div>`).join(''):'<p class="mut">No PIN reset requests.</p>')
+  +`<h2>Device change requests</h2>`+(D.length?D.map(([id,u,i])=>{const d=u.devices[i];return `<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)}) · Pass ${i+1}</span><div>📱 ${E(d.model)}</div><div class="mut mono">${E(d.imei)}</div><div class="mut">Asked ${dt(u.devReq[i])}</div><div class="row" style="margin-top:6px"><button class="sm d" onclick="rmDev('${id}',${i})">Remove device</button><button class="sm s" onclick="act('k4_dismiss_dev',{p_id:'${id}',p_idx:${i}},'Dismissed')">Dismiss</button></div></div>`}).join(''):'<p class="mut">No device requests.</p>')
+  +`<h2>Waiting for a pass</h2>`+(W.length?W.map(([id,u])=>`<div class="card"><div class="uh" onclick="openUser('${id}')"><div><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span><div class="mut">${u.pinSet?'PIN set':'PIN not set yet'} · no pass</div></div><button class="sm s" style="flex:none">Set pass</button></div></div>`).join(''):'<p class="mut">Everyone has a pass.</p>');
+}
+function openUser(id){open=id;tab='users';filter='all';q=id;scrollTo(0,0);render()}
+function logView(){return `<h2 style="margin-top:4px">Recent activity</h2><div class="card">`+(logs.length?logs.map(l=>`<div class="lg"><time>${dt(l.t)}</time><div><b>${E(l.by)}</b> – ${E(l.act)}${l.to?' <span class="mut">'+E(l.to)+'</span>':''}</div></div>`).join(''):'<span class="mut">Nothing yet.</span>')+'</div>'}
+
 function csv(){
-  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-  const rows=[['Name','Login ID','Pass Type','Passes Allowed','Devices Added','Valid Until','Status','Approved By','Approved At','Device Models','IMEIs']];
-  Object.entries(users).filter(([,u])=>u.role!=='admin').forEach(([id,u])=>rows.push([u.name,id,u.passType==='none'?'No pass':u.passType==='temp'?'Temporary':'Permanent',u.count||0,(u.devices||[]).filter(Boolean).length,u.passType==='temp'&&u.expiry?dt(u.expiry):u.passType==='perm'?'Permanent':'',u.passType==='none'?'':isExp(u)?'Expired':'Active',u.approvedBy||'',u.approvedAt?dt(u.approvedAt):'',(u.devices||[]).filter(Boolean).map(d=>d.model).join(' | '),(u.devices||[]).filter(Boolean).map(d=>"'"+d.imei).join(' | ')]));
-  const text='\ufeff'+rows.map(r=>r.map(q).join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download='mobile-pass-k4-users.csv';document.body.appendChild(a);a.click();a.remove()}
+  const q2=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=[['Name','Login ID','PIN Set','Pass Type','Passes Allowed','Devices Added','Valid Until','Status','Approved By','Approved At','Device Models','IMEIs','Mobile Numbers']];
+  U().forEach(([id,u])=>{const dv=(u.devices||[]).filter(Boolean);rows.push([u.name,id,u.pinSet?'Yes':'No',u.passType==='none'?'No pass':u.passType==='temp'?'Temporary':'Permanent',u.count||0,dv.length,u.passType==='temp'&&u.expiry?dt(u.expiry):u.passType==='perm'?'Permanent':'',u.passType==='none'?'':isExp(u)?'Expired':'Active',u.approvedBy||'',u.approvedAt?dt(u.approvedAt):'',dv.map(d=>d.model).join(' | '),dv.map(d=>"'"+d.imei).join(' | '),dv.map(d=>d.num||'').join(' | ')])});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q2).join(',')).join('\n')],{type:'text/csv'}));a.download='mobile-pass-k4-users.csv';document.body.appendChild(a);a.click();a.remove()}
 
 /* ---------- USER ---------- */
 function userView(u){
-  if(u.passType==='none')return `<div class="card"><b>No pass approved yet</b><p class="mut">Ask an Admin to approve your Mobile Pass. This screen updates automatically.</p></div>`;
-  const t=u.passType==='temp',x=isExp(u),cls=x?'x':t?'t':'p',dev=u.devices||[];
-  let out='';
-  for(let i=0;i<u.count;i++){const d=dev[i];
-    out+=`<div class="pass ${cls}"><small>${t?'TEMPORARY':'PERMANENT'}</small><h3>${t?'Temporary Mobile Pass':'Permanent Mobile Pass'}${x?' — EXPIRED':''}</h3><small>Pass ${i+1} of ${u.count}</small>
-    ${t?`<div class="clock" data-exp="${u.expiry}">--:--:--</div><div class="kv"><span>Validity upto</span><b>${dt(u.expiry)}</b></div>`:`<div class="kv"><span>Validity</span><b>Permanent ✔</b></div>`}
-    <div class="kv"><span>Approved by</span><b>${E(u.approvedBy)}</b></div><div class="kv"><span>Holder</span><b>${E(u.name)}</b></div>
-    ${d?`<div class="kv"><span>Device</span><b>${E(d.model)}</b></div><div class="kv"><span>IMEI</span><b>${E(d.imei)}</b></div><div class="kv"><span>Mobile No.</span><b>${E(d.num||'-')}</b></div><div class="kv"><span>Platform</span><b>${E(d.os)}</b></div>`
-    :(x?'<p>Pass expired.</p>':`<p style="margin:10px 0 4px"><b>Add device for Pass ${i+1}</b></p>
-      <input id="dm${i}" placeholder="Phone model" value="${E(guess())}"><input id="di${i}" inputmode="numeric" maxlength="15" placeholder="IMEI (15 digits, dial *#06#)"><input id="dn${i}" inputmode="tel" placeholder="Mobile number (optional)">
-      <button style="width:100%;background:#fff;color:#111" onclick="addDev(${i})">Save device</button>`)}</div>`}
-  return out+`<p class="mut">Dial <b>*#06#</b> on the phone to see its IMEI. Web pages cannot read IMEI automatically.</p>`;
+  if(u.passType==='none')return `<div class="card"><b>${t('noPass')}</b><p class="mut">${t('noPassSub')}</p></div>`;
+  const T=u.passType==='temp',x=isExp(u),cls=x?'x':T?'t':'p',dev=u.devices||[];
+  let out=T&&!x&&u.expiry-now()<36e5?`<div class="card warn2">⏰ ${t('low')} <b class="lt" data-exp="${u.expiry}"></b></div>`:'';
+  for(let i=0;i<u.count;i++){const d=dev[i],req=(u.devReq||{})[i];
+    out+=`<div class="pass ${cls}"><small>${T?t('tempL'):t('permL')}</small><h3>${T?t('tempT'):t('permT')}${x?' — '+t('exp'):''}</h3><small>${t('passOf',i+1,u.count)}</small>
+    <div class="live"><i></i><span class="nowc"></span></div>
+    ${T?`<div class="clock" data-exp="${u.expiry}">--:--:--</div><div class="kv"><span>${t('upto')}</span><b>${dt(u.expiry)}</b></div>`:`<div class="kv"><span>${t('validity')}</span><b>${t('perm')}</b></div>`}
+    <div class="kv"><span>${t('appr')}</span><b>${E(u.approvedBy)}</b></div><div class="kv"><span>${t('holder')}</span><b>${E(u.name)}</b></div>
+    ${d?`<div class="kv"><span>${t('dev')}</span><b>${E(d.model)}</b></div><div class="kv"><span>${t('imei')}</span><b>${E(d.imei)}</b></div><div class="kv"><span>${t('mob')}</span><b>${E(d.num||'-')}</b></div><div class="kv"><span>${t('plat')}</span><b>${E(d.os||'-')}</b></div>`
+      +(x?'':req?`<p class="mut2">⏳ ${t('lostSent')}</p>`:`<button class="sm s" style="width:100%;margin-top:10px" onclick="lostDev(${i})">${t('lost')}</button>`)
+    :(x?`<p>${t('expN')}</p>`:`<p style="margin:10px 0 4px"><b>${t('addFor',i+1)}</b></p>
+      <input id="dm${i}" placeholder="${t('model')}" value="${E(guess())}"><input id="di${i}" inputmode="numeric" maxlength="15" placeholder="${t('imeiPh')}"><input id="dn${i}" inputmode="tel" placeholder="${t('numPh')}">
+      <button style="width:100%;background:#fff;color:#111" onclick="addDev(${i})">${t('save')}</button>`)}</div>`}
+  return out+`<p class="mut">${t('help')}</p>${standalone()?'':`<p class="mut">${t('install')}</p>`}`;
 }
 function guess(){const m=navigator.userAgent.match(/\(([^)]+)\)/);return m?m[1].split(';').slice(-1)[0].trim().replace(/ Build.*/,''):''}
-function addDev(i){const m=$('#dm'+i).value.trim(),im=$('#di'+i).value.replace(/\D/g,'');
-  if(!m)return alert('Enter phone model.');if(im.length!==15)return alert('IMEI must be 15 digits.');
-  act('k4_add_device',{p_idx:i,p_model:m,p_imei:im,p_num:$('#dn'+i).value.trim(),p_os:navigator.platform||'Mobile'})}
-function updClocks(){document.querySelectorAll('.clock').forEach(c=>{const l=+c.dataset.exp-now();c.textContent=l>0?fmt(l):'EXPIRED';if(l<=0&&!c.dataset.done){c.dataset.done=1;setTimeout(render,500)}})}
+function addDev(i){const m=val('dm'+i).trim(),im=val('di'+i).replace(/\D/g,'');
+  if(!m)return toast(t('enterModel'),true);if(!luhn(im))return toast(t('imeiBad'),true);
+  act('k4_add_device',{p_idx:i,p_model:m,p_imei:im,p_num:val('dn'+i).trim(),p_os:navigator.platform||'Mobile'})}
+async function lostDev(i){if(await ask(t('lost'),t('lostQ'),t('yes'),false,t('cancel')))act('k4_report_lost',{p_idx:i},t('lostSent'))}
+
+/* ---------- start ---------- */
+function startApp(){
+  applyTheme();document.documentElement.lang=lang;
+  if(!API_URL){$('#app').innerHTML='<div class="card err">Setup needed: paste your API link into this file (see README).</div>';return}
+  load(true);setInterval(()=>{if(tok&&!document.hidden)load()},45000);
+  document.addEventListener('visibilitychange',()=>{if(tok&&!document.hidden)load()})}
 startApp();
 </script></body></html>
