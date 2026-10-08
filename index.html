@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Mobile Pass K4</title><meta name="theme-color" content="#2557d6">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Mobile Pass K4">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f5f9;--card:#fff;--tx:#14213d;--mut:#667085;--bd:#e3e7ee;--pri:#2557d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1420;--card:#18202f;--tx:#eef2f9;--mut:#9aa6ba;--bd:#27324a;--pri:#6b8cff}}
+:root[data-theme="dark"]{--bg:#0e1420;--card:#18202f;--tx:#eef2f9;--mut:#9aa6ba;--bd:#27324a;--pri:#6b8cff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+h1{font-size:22px;margin:0}h2{font-size:17px;margin:20px 0 8px}
+.badge{font-size:12px;background:var(--pri);color:#fff;border-radius:99px;padding:2px 10px;margin-left:6px;vertical-align:middle}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
+input,select{width:100%;padding:12px;margin:5px 0 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font:inherit}
+label{font-size:13px;color:var(--mut)}
+button{font:inherit;border:0;border-radius:10px;padding:11px 16px;background:var(--pri);color:#fff;cursor:pointer;font-weight:600}
+button.s{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}button.d{background:#d92d20}button.sm{padding:6px 10px;font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{text-align:center}.stat b{display:block;font-size:30px}
+.pass{border-radius:20px;padding:18px;color:#fff;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.pass.t{background:linear-gradient(135deg,#f59e0b,#ea580c)}.pass.p{background:linear-gradient(135deg,#059669,#0f766e)}.pass.x{background:linear-gradient(135deg,#6b7280,#374151)}
+.pass h3{margin:0 0 2px;font-size:20px}.pass small{opacity:.85}
+.clock{font:700 34px/1.2 ui-monospace,Menlo,monospace;background:rgba(0,0,0,.22);border-radius:12px;text-align:center;padding:8px;margin:12px 0}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid rgba(255,255,255,.25);font-size:14px}.kv b{text-align:right;word-break:break-all}
+.pass input{background:rgba(255,255,255,.92);color:#111;border:0}
+.err{color:#d92d20;font-size:14px;min-height:20px}.mut{color:var(--mut);font-size:13px}
+.u{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--bd)}.u:first-child{border:0}
+.tag{font-size:11px;padding:1px 8px;border-radius:99px;margin-left:4px;color:#fff}.tag.t{background:#ea580c}.tag.p{background:#059669}.tag.a{background:#7c3aed}
+.wide{overflow-x:auto}
+html{-webkit-text-size-adjust:100%}body{overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+.wrap{padding:12px 12px 48px}header{flex-wrap:wrap;gap:6px}h1{font-size:20px;display:flex;align-items:center}
+.logo{height:34px;width:auto;max-width:120px;object-fit:contain;margin-right:8px;border-radius:6px}
+button{min-height:46px}button.sm{min-height:42px;flex:1}input,select{min-height:48px;font-size:16px}
+.clock{font-size:clamp(26px,9vw,38px)}.kv{font-size:15px}
+.gate{text-align:center;padding:70px 20px}.gate .ico{font-size:56px}
+@media (max-width:380px){.stats{gap:6px}.row>*{min-width:100%}.pass{padding:14px}}
+@media (min-width:900px){.wrap{max-width:860px}.stat b{font-size:38px}}
+</style></head><body><div class="wrap" id="app"><p class="mut">Loading…</p></div>
+<script>
+const MOBILE=!!((navigator.userAgentData&&navigator.userAgentData.mobile)||/Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent));
+/* >>> OFFICIAL LOGO: paste your own logo file as a data URL or image link between the quotes <<< */
+const LOGO="";
+const brand=()=>(LOGO?'<img class="logo" src="'+LOGO.replace(/"/g,'')+'" alt="">':'📱 ')+'Mobile Pass K4';
+const gateHtml=()=>'<div class="card gate"><div class="ico">📱</div><h2>Mobile only</h2><p class="mut">Passes can be used on mobile phones only. Please open this link on your phone. (Admins can use a computer.)</p><button class="s" onclick="logout()">Log out</button></div>';
+function startApp(){
+  if(!API_URL){document.getElementById('app').innerHTML='<div class="card err">Setup needed: paste your API link into this file (see README).</div>';return}
+  load(true);setInterval(()=>{if(!document.hidden)load()},15000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()})}
+let users={},me=null,hasUsers=true,off=0,tick=null,msg='',loaded=false,last='';
+let tok=null;try{tok=localStorage.getItem('k4t')}catch(e){}
+const sv=v=>{tok=v;try{v?localStorage.setItem('k4t',v):localStorage.removeItem('k4t')}catch(e){}};
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const now=()=>Date.now()+off,cur=()=>me&&users[me]?{id:me,...users[me]}:null;
+const isExp=u=>u.passType==='temp'&&u.expiry&&now()>=u.expiry;
+const fmt=ms=>{if(ms<=0)return'00:00:00';const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return(d?d+'d ':'')+[h,m,s%60].map(x=>String(x).padStart(2,'0')).join(':')};
+const dt=ms=>new Date(ms).toLocaleString([],{dateStyle:'medium',timeStyle:'short'});
+/* >>> PASTE YOUR API LINK (Cloudflare Worker URL) between the quotes <<< */
+const API_URL="https://k4-api.sunil-behera-74e.workers.dev";
+async function api(fn,a={}){
+  let r;try{r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({fn,a})})}catch(e){throw new Error('No internet connection.')}
+  const j=await r.json().catch(()=>null);if(!j)throw new Error('Server error ('+r.status+')');
+  if(!j.ok)throw new Error(j.error);return j.data}
+async function load(force){
+  if(!force&&loaded&&['INPUT','SELECT'].includes(document.activeElement.tagName))return;
+  try{
+    if(tok){const r=await api('k4_get',{p_token:tok});off=r.now-Date.now();me=r.me;users=r.users;hasUsers=true}
+    else{hasUsers=await api('k4_state');users={};me=null}
+  }catch(e){
+    if(tok&&/Session/.test(e.message)){sv(null);msg='Session expired. Please log in.';return load(true)}
+    if(!loaded)$('#app').innerHTML='<div class="card err">Cannot reach the database: '+E(e.message)+'</div>';return}
+  const sig=JSON.stringify([users,hasUsers,me]);if(loaded&&sig===last)return;last=sig;loaded=true;render()}
+function render(){
+  clearInterval(tick);const u=cur();
+  if(!u){$('#app').innerHTML=(msg?`<div class="card err">${E(msg)}</div>`:'')+loginView();msg='';return}
+  if(!MOBILE&&u.role!=='admin'){$('#app').innerHTML=gateHtml();return}
+  $('#app').innerHTML=`<header><h1>${brand()}</h1><div><span class="mut">${E(u.name)}</span><span class="badge">${u.role==='admin'?'Admin':'User'}</span></div></header>
+  ${msg?`<div class="card err">${E(msg)}</div>`:''}`+(u.role==='admin'?adminView(u):userView(u))+`<div class="row" style="margin-top:8px"><button class="s" onclick="logout()">Log out</button></div>`;
+  msg='';tick=setInterval(updClocks,1000);updClocks()}
+async function act(fn,a){try{await api(fn,{p_token:tok,...a});await load(true)}catch(e){msg=e.message;render()}}
+function loginView(){
+  const first=!hasUsers;
+  return `<header><h1>${brand()}</h1></header><div class="card">
+  <h2 style="margin-top:0">${first?'First-time setup: create Admin':'Login'}</h2>
+  ${first?'<label>Your name</label><input id="nm" placeholder="Full name">':''}
+  <label>Login ID</label><input id="lid" autocapitalize="none" placeholder="e.g. rahul01">
+  <label>PIN / Password</label><input id="pw" type="password" placeholder="PIN">
+  <div class="err" id="le"></div>
+  <button style="width:100%" onclick="${first?'setup()':'login()'}">${first?'Create Admin & Enter':'Login'}</button>
+  <p class="mut">Only users added by an Admin can log in. Users: mobile only. Admins: phone or computer.</p></div>`;
+}
+async function login(){try{const t=await api('k4_login',{p_id:$('#lid').value,p_pin:$('#pw').value});
+  if(!t)return $('#le').textContent='Wrong ID or PIN (5 wrong tries lock the ID for 15 minutes).';sv(t);await load(true)}catch(e){$('#le').textContent=e.message}}
+async function setup(){try{const t=await api('k4_setup',{p_id:$('#lid').value,p_name:$('#nm').value,p_pin:$('#pw').value});sv(t);await load(true)}catch(e){$('#le').textContent=e.message}}
+async function logout(){try{await api('k4_logout',{p_token:tok})}catch(e){}sv(null);me=null;users={};last='';load(true)}
+/* ---------- ADMIN ---------- */
+function adminView(a){
+  const L=Object.entries(users),T=L.filter(([,u])=>u.role!=='admin'&&u.passType==='temp'),P=L.filter(([,u])=>u.role!=='admin'&&u.passType==='perm');
+  const tot=L.reduce((n,[,u])=>n+(u.passType!=='none'&&u.role!=='admin'?+u.count||0:0),0);
+  return `<div class="stats"><div class="card stat"><b>${T.length}</b>Temporary users</div><div class="card stat"><b>${P.length}</b>Permanent users</div></div>
+  <div class="mut" style="margin:-4px 0 8px">Total passes allowed: ${tot} · Total users: ${L.length}</div>
+  <div class="row"><button onclick="csv()">⬇ Download CSV</button></div>
+  <h2>Add user</h2><div class="card">
+  <label>Name</label><input id="an"><label>Login ID</label><input id="ai" autocapitalize="none"><label>PIN / Password</label><input id="ap">
+  <button style="width:100%" onclick="addUser()">Add user</button></div>
+  <h2>Users &amp; approvals</h2>`+L.map(([id,u])=>userCard(id,u,a)).join('');
+}
+function userCard(id,u,a){
+  const adm=u.role==='admin',self=id===a.id;
+  const tg=adm?'<span class="tag a">Admin</span>':u.passType==='temp'?'<span class="tag t">Temp</span>':u.passType==='perm'?'<span class="tag p">Permanent</span>':'';
+  let body='';
+  if(!adm){body=`<div class="row" style="margin-top:8px">
+    <select id="ty_${id}"><option value="temp" ${u.passType==='temp'?'selected':''}>Temporary pass</option><option value="perm" ${u.passType==='perm'?'selected':''}>Permanent pass</option></select>
+    <select id="n_${id}">${[1,2,3,4,5].map(n=>`<option ${n==(u.count||1)?'selected':''}>${n}</option>`).join('')}</select></div>
+    <label>Valid for (temporary only)</label><div class="row"><input id="d_${id}" type="number" min="0" placeholder="Days" value="0"><input id="h_${id}" type="number" min="0" placeholder="Hours" value="${u.passType==='temp'?0:24}"></div>
+    <div class="row"><button class="sm" onclick="approve('${id}')">${u.passType==='none'?'Approve':'Update'} pass</button>${u.passType!=='none'?`<button class="sm d" onclick="revoke('${id}')">Revoke</button>`:''}<button class="sm s" onclick="promote('${id}')">Make Admin</button><button class="sm s" onclick="delUser('${id}')">Delete</button></div>`;
+  } else body=`<div class="row" style="margin-top:6px">${self?`<button class="sm d" onclick="demote()">Demote myself to User</button>`:`<span class="mut">Admin</span>`}</div>`;
+  return `<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span>${tg}
+  ${!adm&&u.passType!=='none'?`<div class="mut">${u.count} pass(es) · ${(u.devices||[]).filter(Boolean).length} device(s) added${u.passType==='temp'?' · '+(isExp(u)?'EXPIRED':'until '+dt(u.expiry)):''}</div>`:''}${body}</div>`;
+}
+function addUser(){act('k4_add_user',{p_id:$('#ai').value,p_name:$('#an').value,p_pin:$('#ap').value})}
+function approve(id){const t=$('#ty_'+id).value,hrs=(+$('#d_'+id).value*24)+ +$('#h_'+id).value;
+  if(t==='temp'&&hrs<=0)return alert('Enter validity days/hours for a temporary pass.');
+  act('k4_approve',{p_id:id,p_type:t,p_count:+$('#n_'+id).value,p_hours:hrs})}
+function revoke(id){if(confirm('Revoke pass?'))act('k4_revoke',{p_id:id})}
+function promote(id){if(confirm('Make '+users[id].name+' an Admin?'))act('k4_promote',{p_id:id})}
+function demote(){if(Object.values(users).filter(u=>u.role==='admin').length<2&&!confirm('You are the ONLY admin. After demotion nobody can manage the app. Continue?'))return;
+  if(confirm('Demote yourself to User? All admin powers will be lost.'))act('k4_demote',{})}
+function delUser(id){if(confirm('Delete '+users[id].name+'?'))act('k4_delete',{p_id:id})}
+function csv(){
+  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=[['Name','Login ID','Pass Type','Passes Allowed','Devices Added','Valid Until','Status','Approved By','Approved At','Device Models','IMEIs']];
+  Object.entries(users).filter(([,u])=>u.role!=='admin').forEach(([id,u])=>rows.push([u.name,id,u.passType==='none'?'No pass':u.passType==='temp'?'Temporary':'Permanent',u.count||0,(u.devices||[]).filter(Boolean).length,u.passType==='temp'&&u.expiry?dt(u.expiry):u.passType==='perm'?'Permanent':'',u.passType==='none'?'':isExp(u)?'Expired':'Active',u.approvedBy||'',u.approvedAt?dt(u.approvedAt):'',(u.devices||[]).filter(Boolean).map(d=>d.model).join(' | '),(u.devices||[]).filter(Boolean).map(d=>"'"+d.imei).join(' | ')]));
+  const text='\ufeff'+rows.map(r=>r.map(q).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));a.download='mobile-pass-k4-users.csv';document.body.appendChild(a);a.click();a.remove()}
+
+/* ---------- USER ---------- */
+function userView(u){
+  if(u.passType==='none')return `<div class="card"><b>No pass approved yet</b><p class="mut">Ask an Admin to approve your Mobile Pass. This screen updates automatically.</p></div>`;
+  const t=u.passType==='temp',x=isExp(u),cls=x?'x':t?'t':'p',dev=u.devices||[];
+  let out='';
+  for(let i=0;i<u.count;i++){const d=dev[i];
+    out+=`<div class="pass ${cls}"><small>${t?'TEMPORARY':'PERMANENT'}</small><h3>${t?'Temporary Mobile Pass':'Permanent Mobile Pass'}${x?' — EXPIRED':''}</h3><small>Pass ${i+1} of ${u.count}</small>
+    ${t?`<div class="clock" data-exp="${u.expiry}">--:--:--</div><div class="kv"><span>Validity upto</span><b>${dt(u.expiry)}</b></div>`:`<div class="kv"><span>Validity</span><b>Permanent ✔</b></div>`}
+    <div class="kv"><span>Approved by</span><b>${E(u.approvedBy)}</b></div><div class="kv"><span>Holder</span><b>${E(u.name)}</b></div>
+    ${d?`<div class="kv"><span>Device</span><b>${E(d.model)}</b></div><div class="kv"><span>IMEI</span><b>${E(d.imei)}</b></div><div class="kv"><span>Mobile No.</span><b>${E(d.num||'-')}</b></div><div class="kv"><span>Platform</span><b>${E(d.os)}</b></div>`
+    :(x?'<p>Pass expired.</p>':`<p style="margin:10px 0 4px"><b>Add device for Pass ${i+1}</b></p>
+      <input id="dm${i}" placeholder="Phone model" value="${E(guess())}"><input id="di${i}" inputmode="numeric" maxlength="15" placeholder="IMEI (15 digits, dial *#06#)"><input id="dn${i}" inputmode="tel" placeholder="Mobile number (optional)">
+      <button style="width:100%;background:#fff;color:#111" onclick="addDev(${i})">Save device</button>`)}</div>`}
+  return out+`<p class="mut">Dial <b>*#06#</b> on the phone to see its IMEI. Web pages cannot read IMEI automatically.</p>`;
+}
+function guess(){const m=navigator.userAgent.match(/\(([^)]+)\)/);return m?m[1].split(';').slice(-1)[0].trim().replace(/ Build.*/,''):''}
+function addDev(i){const m=$('#dm'+i).value.trim(),im=$('#di'+i).value.replace(/\D/g,'');
+  if(!m)return alert('Enter phone model.');if(im.length!==15)return alert('IMEI must be 15 digits.');
+  act('k4_add_device',{p_idx:i,p_model:m,p_imei:im,p_num:$('#dn'+i).value.trim(),p_os:navigator.platform||'Mobile'})}
+function updClocks(){document.querySelectorAll('.clock').forEach(c=>{const l=+c.dataset.exp-now();c.textContent=l>0?fmt(l):'EXPIRED';if(l<=0&&!c.dataset.done){c.dataset.done=1;setTimeout(render,500)}})}
+startApp();
+</script></body></html>
