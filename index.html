@@ -74,7 +74,7 @@ details>summary{cursor:pointer;list-style:none}details>summary::-webkit-details-
 <script>
 const MOBILE=!!((navigator.userAgentData&&navigator.userAgentData.mobile)||/Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent));
 /* >>> LOGO: upload your organisation's logo file as "logo.png" next to this file (or put another file name / image link here). If the file is missing, a phone icon is shown instead. <<< */
-const LOGO="logo.svg";
+const LOGO="logo.png";
 /* >>> PASTE YOUR API LINK (Cloudflare Worker URL) between the quotes <<< */
 const API_URL="https://k4-api.sunil-behera-74e.workers.dev";
 
@@ -219,16 +219,18 @@ const resets=()=>Object.entries(users).filter(([,u])=>u.resetReq&&!u.resetOk);
 const okResets=()=>Object.entries(users).filter(([,u])=>u.resetOk);
 const devReqs=()=>U().flatMap(([id,u])=>Object.keys(u.devReq||{}).filter(i=>(u.devices||[])[i]).map(i=>[id,u,+i]));
 const waitingPass=()=>U().filter(([,u])=>u.passType==='none');
+const noMyDev=()=>{const m=users[me];return !!m&&m.role==='admin'&&!(m.devices||[]).some(Boolean)};
 const pendN=()=>Object.keys(reqs).length+resets().length+devReqs().length+waitingPass().length;
-const TABS=[['home','🏠','Home'],['users','👥','Users'],['req','🔔','Requests'],['log','📜','Log']];
-const tabBar=()=>`<nav class="tabs">${TABS.map(([k,i,n])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><span>${i}</span>${n}${k==='req'&&pendN()?`<i class="dot">${pendN()}</i>`:''}</button>`).join('')}</nav>`;
+const TABS=[['home','🏠','Home'],['me','🪪','My Pass'],['users','👥','Users'],['req','🔔','Requests'],['log','📜','Log']];
+const tabBar=()=>`<nav class="tabs">${TABS.map(([k,i,n])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><span>${i}</span>${n}${k==='req'&&pendN()?`<i class="dot">${pendN()}</i>`:''}${k==='me'&&noMyDev()?'<i class="dot">!</i>':''}</button>`).join('')}</nav>`;
 function go(k,f){tab=k;if(f){filter=f;q=''}scrollTo(0,0);render()}
-function adminView(a){return tab==='users'?usersView(a):tab==='req'?reqView():tab==='log'?logView():homeView()}
+const myPass=a=>({...a,passType:'perm',count:1,approvedBy:a.approvedBy||'Admin'});
+function adminView(a){return tab==='me'?userView(myPass(a)):tab==='users'?usersView(a):tab==='req'?reqView():tab==='log'?logView():homeView()}
 
 function homeView(){
   const T=U().filter(([,u])=>u.passType==='temp'),P=U().filter(([,u])=>u.passType==='perm'),X=U().filter(([,u])=>exp24(u));
   const tot=U().reduce((n,[,u])=>n+(u.passType!=='none'?+u.count||0:0),0),gr=settings?settings.grace:0;
-  return `<div class="stats"><div class="card stat tap" onclick="go('users','temp')"><b>${T.length}</b>Temporary users</div><div class="card stat tap" onclick="go('users','perm')"><b>${P.length}</b>Permanent users</div>
+  return (noMyDev()?`<div class="card warn2 tap" onclick="go('me')"><b>📱 Register your mobile</b><div>Admins must add their phone model, IMEI and mobile number. Tap here to open My Pass.</div></div>`:'')+`<div class="stats"><div class="card stat tap" onclick="go('users','temp')"><b>${T.length}</b>Temporary users</div><div class="card stat tap" onclick="go('users','perm')"><b>${P.length}</b>Permanent users</div>
   <div class="card stat tap" onclick="go('req')"><b>${pendN()}</b>Pending requests</div><div class="card stat tap" onclick="go('users','exp24')"><b>${X.length}</b>Expiring in 24h</div></div>
   <div class="mut" style="margin:8px 0">Total passes allowed: ${tot} · Total users: ${Object.keys(users).length}</div>
   <div class="row"><button onclick="csv()">⬇ Download CSV</button></div>
@@ -266,7 +268,7 @@ function row(id,u){
 }
 function tg(id){open=open===id?null:id;g('ulist').innerHTML=ulist()}
 function detail(id,u){
-  if(u.role==='admin')return `<div class="row" style="margin-top:8px">${id===me?`<button class="sm d" onclick="demote()">Demote myself to User</button>`:`<button class="sm s" onclick="delUser('${id}')">Delete admin</button>`}</div>`;
+  if(u.role==='admin')return `<div class="mut" style="margin-top:6px">${(u.devices||[])[0]?'📱 '+E(u.devices[0].model)+' · IMEI <span class="mono">'+E(u.devices[0].imei)+'</span> · 📞 '+E(u.devices[0].num||'-'):'No phone registered yet'}</div><div class="row" style="margin-top:8px">${id===me?`<button class="sm d" onclick="demote()">Demote myself to User</button>`:`<button class="sm s" onclick="delUser('${id}')">Delete admin</button>`}</div>`;
   let dv='';for(let i=0;i<u.count;i++){const d=(u.devices||[])[i];
     dv+=`<div class="dv"><b>Pass ${i+1}</b> `+(d?`<div>📱 ${E(d.model)}</div><div class="mut">IMEI <span class="mono">${E(d.imei)}</span> <button class="lnk" onclick="cp('${E(d.imei)}')">copy</button></div><div class="mut">Mobile ${E(d.num||'-')} · ${E(d.os||'-')}</div>${(u.devReq||{})[i]?'<div class="warn">⚠ User asked to change this device</div>':''}<button class="sm d" style="margin-top:6px" onclick="rmDev('${id}',${i})">Remove device</button>`:'<span class="mut">– no device registered yet</span>')+'</div>'}
   const tmp=u.passType!=='perm';
@@ -327,16 +329,18 @@ function userView(u){
     <div class="live"><i></i><span class="nowc"></span></div>
     ${T?`<div class="clock" data-exp="${u.expiry}">--:--:--</div><div class="kv"><span>${t('upto')}</span><b>${dt(u.expiry)}</b></div>`:`<div class="kv"><span>${t('validity')}</span><b>${t('perm')}</b></div>`}
     ${d?`<div class="kv"><span>${t('dev')}</span><b>${E(d.model)}</b></div><div class="kv"><span>${t('imei')}</span><b>${E(d.imei)}</b></div><div class="kv"><span>${t('mob')}</span><b>${E(d.num||'-')}</b></div><div class="kv"><span>${t('plat')}</span><b>${E(d.os||'-')}</b></div>`
-      +(x?'':req?`<p class="mut2">⏳ ${t('lostSent')}</p>`:`<button class="sm s" style="width:100%;margin-top:10px" onclick="lostDev(${i})">${t('lost')}</button>`)
+      +(x?'':req?`<p class="mut2">⏳ ${t('lostSent')}</p>`:`<button class="sm s" style="width:100%;margin-top:10px" onclick="${u.role==='admin'?'changeMine()':'lostDev('+i+')'}">${t('lost')}</button>`)
     :(x?`<p>${t('expN')}</p>`:`<p style="margin:10px 0 4px"><b>${t('addFor',i+1)}</b></p>
-      <input id="dm${i}" placeholder="${t('model')}" value="${E(guess())}"><input id="di${i}" inputmode="numeric" maxlength="15" placeholder="${t('imeiPh')}"><input id="dn${i}" inputmode="tel" placeholder="${t('numPh')}">
+      <input id="dm${i}" placeholder="${t('model')}" value="${E(guess())}"><input id="di${i}" inputmode="numeric" maxlength="15" placeholder="${t('imeiPh')}"><input id="dn${i}" inputmode="tel" placeholder="${u.role==='admin'?'Mobile number (required)':t('numPh')}">
       <button style="width:100%;background:#fff;color:#111" onclick="addDev(${i})">${t('save')}</button>`)}</div>`}
   return out+`<p class="mut">${t('help')}</p>${standalone()?'':`<p class="mut">${t('install')}</p>`}`;
 }
 function guess(){const m=navigator.userAgent.match(/\(([^)]+)\)/);return m?m[1].split(';').slice(-1)[0].trim().replace(/ Build.*/,''):''}
 function addDev(i){const m=val('dm'+i).trim(),im=val('di'+i).replace(/\D/g,'');
   if(!m)return toast(t('enterModel'),true);if(!luhn(im))return toast(t('imeiBad'),true);
+  if(users[me]&&users[me].role==='admin'&&val('dn'+i).replace(/\D/g,'').length<10)return toast('Enter your 10-digit mobile number.',true);
   act('k4_add_device',{p_idx:i,p_model:m,p_imei:im,p_num:val('dn'+i).trim(),p_os:navigator.platform||'Mobile'})}
+async function changeMine(){if(await ask('Change phone?','Your registered phone will be removed so you can register another one.','Remove',true))act('k4_remove_device',{p_id:me,p_idx:0},'Removed – register your new phone')}
 async function lostDev(i){if(await ask(t('lost'),t('lostQ'),t('yes'),false,t('cancel')))act('k4_report_lost',{p_idx:i},t('lostSent'))}
 
 /* ---------- start ---------- */
