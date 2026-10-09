@@ -56,29 +56,44 @@ details>summary{cursor:pointer;list-style:none}details>summary::-webkit-details-
 .shc{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));z-index:21;max-width:560px;margin:0 auto}
 .gate{text-align:center;padding:70px 20px}.gate .ico{font-size:56px}
 .up{text-transform:uppercase}
+.biglogo{display:block;max-height:76px;max-width:72%;object-fit:contain;margin:4px auto 12px}
+.plogo{height:28px;max-width:120px;object-fit:contain;background:#fff;border-radius:8px;padding:3px 8px}
+.ptop{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.ptop b{font-size:13px;letter-spacing:1px;opacity:.95}
+.who{background:rgba(0,0,0,.22);border-radius:14px;padding:10px 12px;margin:10px 0}.who small,.apr small{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;opacity:.85}
+.big{font-size:clamp(22px,7vw,30px);font-weight:800;line-height:1.15;word-break:break-word;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.idl{font:600 14px ui-monospace,Menlo,monospace;opacity:.9;margin-top:2px}
+.apr{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.16);border-radius:14px;padding:10px 12px;margin:10px 0}
+.big2{font-size:clamp(18px,5.6vw,22px);font-weight:700;line-height:1.2;word-break:break-word}
+.stamp{flex:none;border:3px solid #fff;border-radius:12px;padding:5px 10px;font-weight:900;letter-spacing:2px;font-size:15px;line-height:1.15;text-align:center;transform:rotate(-8deg);box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.25);background:rgba(0,0,0,.12)}
+.stamp small{font-size:10px;letter-spacing:.5px;font-weight:600;opacity:.95}
+.stamp.bad{border-color:#fecaca;color:#fecaca}
+.rq{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.rq a{color:var(--pri);font-weight:600;text-decoration:none}
 @media (max-width:380px){.stats{gap:6px}.row>*{min-width:100%}.pass{padding:14px}}
 @media (min-width:900px){.wrap{max-width:860px}.stat b{font-size:38px}}
 </style></head><body><div class="wrap" id="app"><p class="mut">Loading…</p></div><div id="toast"></div><div id="sheet"></div>
 <script>
 const MOBILE=!!((navigator.userAgentData&&navigator.userAgentData.mobile)||/Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent));
-/* >>> OFFICIAL LOGO: paste your own logo file as a data URL or image link between the quotes <<< */
-const LOGO="";
+/* >>> LOGO: upload your organisation's logo file as "logo.png" next to this file (or put another file name / image link here). If the file is missing, a phone icon is shown instead. <<< */
+const LOGO="logo.png";
 /* >>> PASTE YOUR API LINK (Cloudflare Worker URL) between the quotes <<< */
 const API_URL="https://k4-api.sunil-behera-74e.workers.dev";
 
 const $=s=>document.querySelector(s),g=id=>document.getElementById(id),val=id=>g(id)?g(id).value:'';
 const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const brand=()=>(LOGO?'<img class="logo" src="'+LOGO.replace(/"/g,'')+'" alt="">':'📱 ')+'Mobile Pass K4';
+const logoSrc=()=>E(LOGO);
+const brand=()=>(LOGO?'<img class="logo" src="'+logoSrc()+'" alt="" onerror="this.outerHTML=\'📱 \'">':'📱 ')+'Mobile Pass K4';
+const bigLogo=()=>LOGO?'<img class="biglogo" src="'+logoSrc()+'" alt="" onerror="this.remove()">':'';
+const passLogo=()=>LOGO?'<img class="plogo" src="'+logoSrc()+'" alt="" onerror="this.remove()">':'<span></span>';
 
 /* ---------- languages (login + user screens) ---------- */
 const LANGS={en:'English',hi:'हिन्दी',or:'ଓଡ଼ିଆ'};
 const TX={
 en:{id:'Login ID',pin:'PIN / Password',go:'Continue',login:'Login',newPin:'Create your PIN',newPin2:'Confirm PIN',code:'Verification code (last 4 digits of your mobile number)',savePin:'Save PIN & Enter',forgot:'Forgot PIN?',sent:'Request sent. Your admin must approve it. Then come back here and set a new PIN.',waiting:'Waiting for your admin to approve the PIN reset.',again:'Check again',notyet:'Not approved yet.',back:'Back',change:'Change',logout:'Log out',firstTime:'Your admin added you. Create your own PIN now.',
-noPass:'No pass approved yet',noPassSub:'Ask an Admin to approve your Mobile Pass. This screen updates automatically.',tempL:'TEMPORARY',permL:'PERMANENT',tempT:'Temporary Mobile Pass',permT:'Permanent Mobile Pass',passOf:'Pass {0} of {1}',upto:'Validity upto',validity:'Validity',perm:'Permanent ✔',appr:'Approved by',holder:'Holder',dev:'Device',imei:'IMEI',mob:'Mobile No.',plat:'Platform',addFor:'Add device for Pass {0}',model:'Phone model',imeiPh:'IMEI (15 digits, dial *#06#)',numPh:'Mobile number (optional)',save:'Save device',help:'Dial *#06# on the phone to see its IMEI. Web pages cannot read IMEI automatically.',exp:'EXPIRED',expN:'Pass expired.',low:'Your temporary pass ends in',lost:'Lost / changed phone',lostQ:'Ask your admin to remove this device so you can register another one?',lostSent:'Request sent to admin',mobOnly:'Mobile only',mobTxt:'Passes can be used on mobile phones only. Please open this link on your phone. (Admins can use a computer.)',lang:'Language',wrongPin:'Wrong ID or PIN.',pinMatch:'PINs do not match.',pinLen:'PIN must be at least 4 characters.',needId:'Enter your Login ID.',enterModel:'Enter phone model.',imeiBad:'Invalid IMEI. It must be 15 digits (dial *#06#).',yes:'Yes',cancel:'Cancel',install:'Tip: use your browser menu → "Add to Home screen" to install this app.'},
+noPass:'No pass approved yet',noPassSub:'Ask an Admin to approve your Mobile Pass. This screen updates automatically.',tempL:'TEMPORARY',permL:'PERMANENT',tempT:'Temporary Mobile Pass',permT:'Permanent Mobile Pass',passOf:'Pass {0} of {1}',upto:'Validity upto',validity:'Validity',perm:'Permanent ✔',appr:'Approved by',holder:'Holder',dev:'Device',imei:'IMEI',mob:'Mobile No.',plat:'Platform',addFor:'Add device for Pass {0}',model:'Phone model',imeiPh:'IMEI (15 digits, dial *#06#)',numPh:'Mobile number (optional)',save:'Save device',help:'Dial *#06# on the phone to see its IMEI. Web pages cannot read IMEI automatically.',exp:'EXPIRED',expN:'Pass expired.',low:'Your temporary pass ends in',lost:'Lost / changed phone',lostQ:'Ask your admin to remove this device so you can register another one?',lostSent:'Request sent to admin',mobOnly:'Mobile only',mobTxt:'Passes can be used on mobile phones only. Please open this link on your phone. (Admins can use a computer.)',lang:'Language',wrongPin:'Wrong ID or PIN.',pinMatch:'PINs do not match.',pinLen:'PIN must be at least 4 characters.',needId:'Enter your Login ID.',enterModel:'Enter phone model.',imeiBad:'Invalid IMEI. It must be 15 digits (dial *#06#).',yes:'Yes',cancel:'Cancel',stampOk:'APPROVED',newUser:'New here? Request access',reqTitle:'Request access',nm:'Your full name',myId:'Choose a Login ID (3-20 letters/numbers)',myMob:'Mobile number (10 digits)',myNote:'Team / location (optional)',send:'Send request',reqSent:'Request sent. Your admin will verify and approve it. Then come back, enter your ID and create your PIN. Your verification code is the last 4 digits of your mobile number.',reqPending:'Your request is waiting for admin approval.',reqRejected:'Your request was not approved. Please contact your admin.',needAll:'Fill in your name, ID and mobile number.',install:'Tip: use your browser menu → "Add to Home screen" to install this app.'},
 hi:{id:'लॉगिन आईडी',pin:'पिन / पासवर्ड',go:'आगे बढ़ें',login:'लॉगिन',newPin:'अपना पिन बनाएँ',newPin2:'पिन दोबारा लिखें',code:'सत्यापन कोड (आपके मोबाइल नंबर के अंतिम 4 अंक)',savePin:'पिन सेव करें और प्रवेश करें',forgot:'पिन भूल गए?',sent:'अनुरोध भेज दिया गया। एडमिन की मंज़ूरी के बाद यहाँ वापस आकर नया पिन बनाएँ।',waiting:'एडमिन की मंज़ूरी का इंतज़ार है।',again:'फिर जाँचें',notyet:'अभी मंज़ूरी नहीं मिली।',back:'वापस',change:'बदलें',logout:'लॉग आउट',firstTime:'एडमिन ने आपको जोड़ा है। अब अपना पिन बनाएँ।',
-noPass:'अभी कोई पास मंज़ूर नहीं है',noPassSub:'अपना मोबाइल पास मंज़ूर कराने के लिए एडमिन से कहें। यह स्क्रीन अपने-आप अपडेट होती है।',tempL:'अस्थायी',permL:'स्थायी',tempT:'अस्थायी मोबाइल पास',permT:'स्थायी मोबाइल पास',passOf:'पास {0} / {1}',upto:'वैधता तक',validity:'वैधता',perm:'स्थायी ✔',appr:'मंज़ूरीकर्ता',holder:'धारक',dev:'डिवाइस',imei:'IMEI',mob:'मोबाइल नं.',plat:'प्लेटफ़ॉर्म',addFor:'पास {0} के लिए डिवाइस जोड़ें',model:'फ़ोन मॉडल',imeiPh:'IMEI (15 अंक, *#06# डायल करें)',numPh:'मोबाइल नंबर (वैकल्पिक)',save:'डिवाइस सेव करें',help:'IMEI देखने के लिए फ़ोन पर *#06# डायल करें। वेब पेज IMEI अपने-आप नहीं पढ़ सकते।',exp:'समाप्त',expN:'पास समाप्त हो गया।',low:'आपका अस्थायी पास समाप्त होने में',lost:'फ़ोन खोया / बदला',lostQ:'क्या एडमिन से यह डिवाइस हटवाना चाहते हैं ताकि दूसरा जोड़ सकें?',lostSent:'एडमिन को अनुरोध भेजा गया',mobOnly:'केवल मोबाइल',mobTxt:'पास केवल मोबाइल फ़ोन पर चलते हैं। कृपया यह लिंक अपने फ़ोन पर खोलें। (एडमिन कंप्यूटर इस्तेमाल कर सकते हैं।)',lang:'भाषा',wrongPin:'आईडी या पिन गलत है।',pinMatch:'पिन मेल नहीं खाते।',pinLen:'पिन कम से कम 4 अक्षर का हो।',needId:'अपनी लॉगिन आईडी लिखें।',enterModel:'फ़ोन मॉडल लिखें।',imeiBad:'अमान्य IMEI। यह 15 अंकों का होना चाहिए (*#06# डायल करें)।',yes:'हाँ',cancel:'रद्द करें',install:'सुझाव: ब्राउज़र मेनू → "होम स्क्रीन पर जोड़ें" से इस ऐप को इंस्टॉल करें।'},
+noPass:'अभी कोई पास मंज़ूर नहीं है',noPassSub:'अपना मोबाइल पास मंज़ूर कराने के लिए एडमिन से कहें। यह स्क्रीन अपने-आप अपडेट होती है।',tempL:'अस्थायी',permL:'स्थायी',tempT:'अस्थायी मोबाइल पास',permT:'स्थायी मोबाइल पास',passOf:'पास {0} / {1}',upto:'वैधता तक',validity:'वैधता',perm:'स्थायी ✔',appr:'मंज़ूरीकर्ता',holder:'धारक',dev:'डिवाइस',imei:'IMEI',mob:'मोबाइल नं.',plat:'प्लेटफ़ॉर्म',addFor:'पास {0} के लिए डिवाइस जोड़ें',model:'फ़ोन मॉडल',imeiPh:'IMEI (15 अंक, *#06# डायल करें)',numPh:'मोबाइल नंबर (वैकल्पिक)',save:'डिवाइस सेव करें',help:'IMEI देखने के लिए फ़ोन पर *#06# डायल करें। वेब पेज IMEI अपने-आप नहीं पढ़ सकते।',exp:'समाप्त',expN:'पास समाप्त हो गया।',low:'आपका अस्थायी पास समाप्त होने में',lost:'फ़ोन खोया / बदला',lostQ:'क्या एडमिन से यह डिवाइस हटवाना चाहते हैं ताकि दूसरा जोड़ सकें?',lostSent:'एडमिन को अनुरोध भेजा गया',mobOnly:'केवल मोबाइल',mobTxt:'पास केवल मोबाइल फ़ोन पर चलते हैं। कृपया यह लिंक अपने फ़ोन पर खोलें। (एडमिन कंप्यूटर इस्तेमाल कर सकते हैं।)',lang:'भाषा',wrongPin:'आईडी या पिन गलत है।',pinMatch:'पिन मेल नहीं खाते।',pinLen:'पिन कम से कम 4 अक्षर का हो।',needId:'अपनी लॉगिन आईडी लिखें।',enterModel:'फ़ोन मॉडल लिखें।',imeiBad:'अमान्य IMEI। यह 15 अंकों का होना चाहिए (*#06# डायल करें)।',yes:'हाँ',cancel:'रद्द करें',stampOk:'मंज़ूर',newUser:'नए हैं? एक्सेस का अनुरोध करें',reqTitle:'एक्सेस का अनुरोध',nm:'आपका पूरा नाम',myId:'लॉगिन आईडी चुनें (3-20 अक्षर/अंक)',myMob:'मोबाइल नंबर (10 अंक)',myNote:'टीम / स्थान (वैकल्पिक)',send:'अनुरोध भेजें',reqSent:'अनुरोध भेज दिया गया। एडमिन जाँच कर मंज़ूर करेंगे। फिर वापस आकर अपनी आईडी लिखें और पिन बनाएँ। सत्यापन कोड आपके मोबाइल नंबर के अंतिम 4 अंक हैं।',reqPending:'आपका अनुरोध एडमिन की मंज़ूरी के इंतज़ार में है।',reqRejected:'आपका अनुरोध मंज़ूर नहीं हुआ। कृपया एडमिन से संपर्क करें।',needAll:'अपना नाम, आईडी और मोबाइल नंबर भरें।',install:'सुझाव: ब्राउज़र मेनू → "होम स्क्रीन पर जोड़ें" से इस ऐप को इंस्टॉल करें।'},
 or:{id:'ଲଗଇନ୍ ଆଇଡି',pin:'ପିନ୍ / ପାସୱାର୍ଡ',go:'ଆଗକୁ',login:'ଲଗଇନ୍',newPin:'ନିଜର ପିନ୍ ତିଆରି କରନ୍ତୁ',newPin2:'ପିନ୍ ପୁଣି ଲେଖନ୍ତୁ',code:'ଯାଞ୍ଚ କୋଡ୍ (ଆପଣଙ୍କ ମୋବାଇଲ୍ ନମ୍ବରର ଶେଷ ୪ ଅଙ୍କ)',savePin:'ପିନ୍ ସେଭ୍ କରି ପ୍ରବେଶ କରନ୍ତୁ',forgot:'ପିନ୍ ଭୁଲିଗଲେ?',sent:'ଅନୁରୋଧ ପଠାଗଲା। ଆଡମିନ୍ ଅନୁମୋଦନ କଲାପରେ ଏଠାକୁ ଫେରି ନୂଆ ପିନ୍ ସେଟ୍ କରନ୍ତୁ।',waiting:'ଆଡମିନ୍ଙ୍କ ଅନୁମୋଦନ ପାଇଁ ଅପେକ୍ଷା।',again:'ପୁଣି ଯାଞ୍ଚ କରନ୍ତୁ',notyet:'ଏପର୍ଯ୍ୟନ୍ତ ଅନୁମୋଦନ ହୋଇନାହିଁ।',back:'ପଛକୁ',change:'ବଦଳାନ୍ତୁ',logout:'ଲଗ୍ ଆଉଟ୍',firstTime:'ଆଡମିନ୍ ଆପଣଙ୍କୁ ଯୋଡିଛନ୍ତି। ଏବେ ନିଜର ପିନ୍ ତିଆରି କରନ୍ତୁ।',
-noPass:'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ପାସ୍ ଅନୁମୋଦିତ ନାହିଁ',noPassSub:'ଆପଣଙ୍କ ମୋବାଇଲ୍ ପାସ୍ ଅନୁମୋଦନ ପାଇଁ ଆଡମିନ୍ଙ୍କୁ କୁହନ୍ତୁ। ଏହି ସ୍କ୍ରିନ୍ ନିଜେ ନିଜେ ଅପଡେଟ୍ ହୁଏ।',tempL:'ଅସ୍ଥାୟୀ',permL:'ସ୍ଥାୟୀ',tempT:'ଅସ୍ଥାୟୀ ମୋବାଇଲ୍ ପାସ୍',permT:'ସ୍ଥାୟୀ ମୋବାଇଲ୍ ପାସ୍',passOf:'ପାସ୍ {0} / {1}',upto:'ବୈଧତା ପର୍ଯ୍ୟନ୍ତ',validity:'ବୈଧତା',perm:'ସ୍ଥାୟୀ ✔',appr:'ଅନୁମୋଦକ',holder:'ଧାରକ',dev:'ଡିଭାଇସ୍',imei:'IMEI',mob:'ମୋବାଇଲ୍ ନଂ.',plat:'ପ୍ଲାଟଫର୍ମ',addFor:'ପାସ୍ {0} ପାଇଁ ଡିଭାଇସ୍ ଯୋଡନ୍ତୁ',model:'ଫୋନ୍ ମଡେଲ୍',imeiPh:'IMEI (୧୫ ଅଙ୍କ, *#06# ଡାଏଲ୍ କରନ୍ତୁ)',numPh:'ମୋବାଇଲ୍ ନମ୍ବର (ଇଚ୍ଛାଧୀନ)',save:'ଡିଭାଇସ୍ ସେଭ୍ କରନ୍ତୁ',help:'IMEI ଦେଖିବାକୁ ଫୋନରେ *#06# ଡାଏଲ୍ କରନ୍ତୁ। ୱେବ୍ ପେଜ୍ ନିଜେ IMEI ପଢ଼ିପାରେ ନାହିଁ।',exp:'ମିଆଦ ସରିଲା',expN:'ପାସ୍ ର ମିଆଦ ସରିଯାଇଛି।',low:'ଆପଣଙ୍କ ଅସ୍ଥାୟୀ ପାସ୍ ସରିବାକୁ ବାକି',lost:'ଫୋନ୍ ହଜିଲା / ବଦଳିଲା',lostQ:'ଅନ୍ୟ ଫୋନ୍ ଯୋଡିବା ପାଇଁ ଆଡମିନ୍ଙ୍କୁ ଏହି ଡିଭାଇସ୍ ହଟାଇବାକୁ କହିବେ?',lostSent:'ଆଡମିନ୍ଙ୍କୁ ଅନୁରୋଧ ପଠାଗଲା',mobOnly:'କେବଳ ମୋବାଇଲ୍',mobTxt:'ପାସ୍ କେବଳ ମୋବାଇଲ୍ ଫୋନରେ ଚାଲେ। ଦୟାକରି ଏହି ଲିଙ୍କ୍ ଆପଣଙ୍କ ଫୋନରେ ଖୋଲନ୍ତୁ। (ଆଡମିନ୍ କମ୍ପ୍ୟୁଟର ବ୍ୟବହାର କରିପାରିବେ।)',lang:'ଭାଷା',wrongPin:'ଆଇଡି କିମ୍ବା ପିନ୍ ଭୁଲ୍।',pinMatch:'ପିନ୍ ମେଳ ଖାଉନାହିଁ।',pinLen:'ପିନ୍ ଅତି କମରେ ୪ ଅକ୍ଷର ହେବା ଉଚିତ।',needId:'ଆପଣଙ୍କ ଲଗଇନ୍ ଆଇଡି ଲେଖନ୍ତୁ।',enterModel:'ଫୋନ୍ ମଡେଲ୍ ଲେଖନ୍ତୁ।',imeiBad:'ଅବୈଧ IMEI। ଏହା ୧୫ ଅଙ୍କର ହେବା ଉଚିତ (*#06# ଡାଏଲ୍ କରନ୍ତୁ)।',yes:'ହଁ',cancel:'ବାତିଲ୍',install:'ସୂଚନା: ବ୍ରାଉଜର୍ ମେନୁ → "ହୋମ୍ ସ୍କ୍ରିନ୍‌ରେ ଯୋଡନ୍ତୁ" ଦ୍ୱାରା ଏହି ଆପ୍ ଇନଷ୍ଟଲ୍ କରନ୍ତୁ।'}};
+noPass:'ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ପାସ୍ ଅନୁମୋଦିତ ନାହିଁ',noPassSub:'ଆପଣଙ୍କ ମୋବାଇଲ୍ ପାସ୍ ଅନୁମୋଦନ ପାଇଁ ଆଡମିନ୍ଙ୍କୁ କୁହନ୍ତୁ। ଏହି ସ୍କ୍ରିନ୍ ନିଜେ ନିଜେ ଅପଡେଟ୍ ହୁଏ।',tempL:'ଅସ୍ଥାୟୀ',permL:'ସ୍ଥାୟୀ',tempT:'ଅସ୍ଥାୟୀ ମୋବାଇଲ୍ ପାସ୍',permT:'ସ୍ଥାୟୀ ମୋବାଇଲ୍ ପାସ୍',passOf:'ପାସ୍ {0} / {1}',upto:'ବୈଧତା ପର୍ଯ୍ୟନ୍ତ',validity:'ବୈଧତା',perm:'ସ୍ଥାୟୀ ✔',appr:'ଅନୁମୋଦକ',holder:'ଧାରକ',dev:'ଡିଭାଇସ୍',imei:'IMEI',mob:'ମୋବାଇଲ୍ ନଂ.',plat:'ପ୍ଲାଟଫର୍ମ',addFor:'ପାସ୍ {0} ପାଇଁ ଡିଭାଇସ୍ ଯୋଡନ୍ତୁ',model:'ଫୋନ୍ ମଡେଲ୍',imeiPh:'IMEI (୧୫ ଅଙ୍କ, *#06# ଡାଏଲ୍ କରନ୍ତୁ)',numPh:'ମୋବାଇଲ୍ ନମ୍ବର (ଇଚ୍ଛାଧୀନ)',save:'ଡିଭାଇସ୍ ସେଭ୍ କରନ୍ତୁ',help:'IMEI ଦେଖିବାକୁ ଫୋନରେ *#06# ଡାଏଲ୍ କରନ୍ତୁ। ୱେବ୍ ପେଜ୍ ନିଜେ IMEI ପଢ଼ିପାରେ ନାହିଁ।',exp:'ମିଆଦ ସରିଲା',expN:'ପାସ୍ ର ମିଆଦ ସରିଯାଇଛି।',low:'ଆପଣଙ୍କ ଅସ୍ଥାୟୀ ପାସ୍ ସରିବାକୁ ବାକି',lost:'ଫୋନ୍ ହଜିଲା / ବଦଳିଲା',lostQ:'ଅନ୍ୟ ଫୋନ୍ ଯୋଡିବା ପାଇଁ ଆଡମିନ୍ଙ୍କୁ ଏହି ଡିଭାଇସ୍ ହଟାଇବାକୁ କହିବେ?',lostSent:'ଆଡମିନ୍ଙ୍କୁ ଅନୁରୋଧ ପଠାଗଲା',mobOnly:'କେବଳ ମୋବାଇଲ୍',mobTxt:'ପାସ୍ କେବଳ ମୋବାଇଲ୍ ଫୋନରେ ଚାଲେ। ଦୟାକରି ଏହି ଲିଙ୍କ୍ ଆପଣଙ୍କ ଫୋନରେ ଖୋଲନ୍ତୁ। (ଆଡମିନ୍ କମ୍ପ୍ୟୁଟର ବ୍ୟବହାର କରିପାରିବେ।)',lang:'ଭାଷା',wrongPin:'ଆଇଡି କିମ୍ବା ପିନ୍ ଭୁଲ୍।',pinMatch:'ପିନ୍ ମେଳ ଖାଉନାହିଁ।',pinLen:'ପିନ୍ ଅତି କମରେ ୪ ଅକ୍ଷର ହେବା ଉଚିତ।',needId:'ଆପଣଙ୍କ ଲଗଇନ୍ ଆଇଡି ଲେଖନ୍ତୁ।',enterModel:'ଫୋନ୍ ମଡେଲ୍ ଲେଖନ୍ତୁ।',imeiBad:'ଅବୈଧ IMEI। ଏହା ୧୫ ଅଙ୍କର ହେବା ଉଚିତ (*#06# ଡାଏଲ୍ କରନ୍ତୁ)।',yes:'ହଁ',cancel:'ବାତିଲ୍',stampOk:'ଅନୁମୋଦିତ',newUser:'ନୂଆ? ଆକ୍ସେସ୍ ପାଇଁ ଅନୁରୋଧ କରନ୍ତୁ',reqTitle:'ଆକ୍ସେସ୍ ଅନୁରୋଧ',nm:'ଆପଣଙ୍କ ପୂରା ନାମ',myId:'ଲଗଇନ୍ ଆଇଡି ବାଛନ୍ତୁ (୩-୨୦ ଅକ୍ଷର/ଅଙ୍କ)',myMob:'ମୋବାଇଲ୍ ନମ୍ବର (୧୦ ଅଙ୍କ)',myNote:'ଟିମ୍ / ସ୍ଥାନ (ଇଚ୍ଛାଧୀନ)',send:'ଅନୁରୋଧ ପଠାନ୍ତୁ',reqSent:'ଅନୁରୋଧ ପଠାଗଲା। ଆଡମିନ୍ ଯାଞ୍ଚ କରି ଅନୁମୋଦନ କରିବେ। ତା’ପରେ ଫେରି ଆପଣଙ୍କ ଆଇଡି ଲେଖି ପିନ୍ ତିଆରି କରନ୍ତୁ। ଯାଞ୍ଚ କୋଡ୍ ହେଉଛି ଆପଣଙ୍କ ମୋବାଇଲ୍ ନମ୍ବରର ଶେଷ ୪ ଅଙ୍କ।',reqPending:'ଆପଣଙ୍କ ଅନୁରୋଧ ଆଡମିନ୍ଙ୍କ ଅନୁମୋଦନ ଅପେକ୍ଷାରେ ଅଛି।',reqRejected:'ଆପଣଙ୍କ ଅନୁରୋଧ ଅନୁମୋଦିତ ହୋଇନାହିଁ। ଦୟାକରି ଆଡମିନ୍ଙ୍କ ସହ ଯୋଗାଯୋଗ କରନ୍ତୁ।',needAll:'ଆପଣଙ୍କ ନାମ, ଆଇଡି ଓ ମୋବାଇଲ୍ ନମ୍ବର ଲେଖନ୍ତୁ।',install:'ସୂଚନା: ବ୍ରାଉଜର୍ ମେନୁ → "ହୋମ୍ ସ୍କ୍ରିନ୍‌ରେ ଯୋଡନ୍ତୁ" ଦ୍ୱାରା ଏହି ଆପ୍ ଇନଷ୍ଟଲ୍ କରନ୍ତୁ।'}};
 let lang='en';try{lang=localStorage.getItem('k4l')||'en'}catch(e){}if(!LANGS[lang])lang='en';
 const t=(k,...a)=>{let s=(TX[lang]&&TX[lang][k])||TX.en[k]||k;a.forEach((v,i)=>s=s.replace('{'+i+'}',v));return s};
 const langSel=()=>`<select class="lang" onchange="setLang(this.value)" aria-label="${t('lang')}">${Object.entries(LANGS).map(([k,n])=>`<option value="${k}"${k===lang?' selected':''}>${n}</option>`).join('')}</select>`;
@@ -87,7 +102,7 @@ function applyTheme(){let v=null;try{v=localStorage.getItem('k4th')}catch(e){}if
 function toggleTheme(){const dark=matchMedia('(prefers-color-scheme:dark)').matches,cur=document.documentElement.dataset.theme||(dark?'dark':'light'),nx=cur==='dark'?'light':'dark';try{localStorage.setItem('k4th',nx)}catch(e){}applyTheme()}
 
 /* ---------- state + API ---------- */
-let users={},logs=[],settings=null,me=null,hasUsers=true,off=0,tick=null,loaded=false,last='',lastOk=0,offline=false,pending='';
+let users={},logs=[],reqs={},settings=null,me=null,hasUsers=true,off=0,tick=null,loaded=false,last='',lastOk=0,offline=false,pending='';
 let tab='home',filter='all',q='',open=null,lg={step:'id',id:'',needsCode:false,sent:false};
 let tok=null;try{tok=localStorage.getItem('k4t')}catch(e){}
 const sv=v=>{tok=v;try{v?localStorage.setItem('k4t',v):localStorage.removeItem('k4t')}catch(e){}};
@@ -105,15 +120,15 @@ const updTxt=()=>offline?'Offline – showing last data':lastOk?'Updated '+new D
 async function load(force){
   if(!force&&loaded&&['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;
   try{
-    if(tok){const r=await api('k4_get',{p_token:tok});off=r.now-Date.now();me=r.me;users=r.users;logs=r.log||[];settings=r.settings;hasUsers=true}
-    else if(!loaded||force){hasUsers=await api('k4_state');users={};me=null;logs=[]}
+    if(tok){const r=await api('k4_get',{p_token:tok});off=r.now-Date.now();me=r.me;users=r.users;logs=r.log||[];reqs=r.reqs||{};settings=r.settings;hasUsers=true}
+    else if(!loaded||force){hasUsers=await api('k4_state');users={};me=null;logs=[];reqs={}}
     lastOk=Date.now();offline=false;
   }catch(e){
     if(tok&&/Session expired|account was removed/.test(e.message)){sv(null);pending=e.message;last='';return load(true)}
     if(!loaded){$('#app').innerHTML='<div class="card err">Cannot reach the database: '+E(e.message)+'</div>';return}
     offline=true;const el=g('upd');if(el)el.textContent=updTxt();return}
   const el=g('upd');if(el)el.textContent=updTxt();
-  const sig=JSON.stringify([users,hasUsers,me,settings,logs,Math.floor(now()/6e4)]);if(loaded&&sig===last)return;last=sig;loaded=true;render()}
+  const sig=JSON.stringify([users,hasUsers,me,settings,logs,reqs,Math.floor(now()/6e4)]);if(loaded&&sig===last)return;last=sig;loaded=true;render()}
 async function refresh(){await load(true);toast('Up to date')}
 async function act(fn,a,ok){try{const r=await api(fn,{p_token:tok,...a});await load(true);if(ok)toast(ok);return r}
   catch(e){if(/Session expired|account was removed/.test(e.message)){sv(null);pending=e.message;last='';return load(true)}toast(e.message,true)}}
@@ -151,7 +166,15 @@ function updClocks(){const n=now();
 const lerr=m=>{const e=g('le');if(e)e.textContent=m};
 const toStep=(s,x)=>{lg={...lg,step:s,...x};render()};
 function loginView(){
-  const head=`<header><h1>${brand()}</h1>${langSel()}</header>`;
+  const head=`<header><h1>${brand()}</h1>${langSel()}</header>${bigLogo()}`;
+  if(hasUsers&&lg.step==='request')return head+`<div class="card"><h2 style="margin-top:0">${t('reqTitle')}</h2>
+    <label>${t('nm')}</label><input id="rn" autocapitalize="words" autocomplete="name">
+    <label>${t('myId')}</label>${idIn('lid',lg.id)}
+    <label>${t('myMob')}</label><input id="rm" inputmode="numeric" maxlength="13" autocomplete="tel">
+    <label>${t('myNote')}</label><input id="rt" maxlength="80">
+    <div class="err" id="le"></div><div class="row"><button class="s" onclick="toStep('id')">${t('back')}</button><button onclick="sendReq()">${t('send')}</button></div></div>`;
+  if(hasUsers&&lg.step==='reqdone')return head+`<div class="card"><h2 style="margin-top:0">✅ ${t('reqTitle')}</h2><p><b>${E(lg.id)}</b></p><p>${t('reqSent')}</p><button style="width:100%" onclick="toStep('id',{id:''})">${t('back')}</button></div>`;
+  if(hasUsers&&lg.step==='reqwait')return head+`<div class="card"><h2 style="margin-top:0">${t('reqTitle')}</h2><p><b>${E(lg.id)}</b></p><p>${lg.rejected?t('reqRejected'):t('reqPending')}</p><div class="row"><button class="s" onclick="toStep('id',{rejected:false})">${t('back')}</button>${lg.rejected?`<button onclick="toStep('request',{rejected:false})">${t('reqTitle')}</button>`:`<button onclick="nextId(lg.id)">${t('again')}</button>`}</div></div>`;
   if(!hasUsers)return head+`<div class="card"><h2 style="margin-top:0">First-time setup: create Admin</h2>
     <label>Your name</label><input id="nm" autocapitalize="words" placeholder="Full name"><label>${t('id')}</label>${idIn('lid','')}
     <label>${t('pin')}</label>${pw('pw','PIN (min 4)','new-password')}<label>${t('newPin2')}</label>${pw('pw2','PIN','new-password')}
@@ -170,10 +193,14 @@ function loginView(){
     <div class="err" id="le"></div><div class="row"><button class="s" onclick="toStep('id')">${t('back')}</button><button onclick="recover()">Reset &amp; Enter</button></div></div>`;
   return head+`<div class="card"><h2 style="margin-top:0">${t('login')}</h2><label>${t('id')}</label>${idIn('lid',lg.id,'nextId()')}
     <div class="err" id="le"></div><button style="width:100%" onclick="nextId()">${t('go')}</button>
-    <p class="mut" style="text-align:center;margin-bottom:0">Only users added by an Admin can log in.<br><button class="lnk" onclick="toStep('recover')">Admin locked out?</button></p></div>`;
+    <p class="mut" style="text-align:center;margin-bottom:0"><button class="lnk" onclick="toStep('request')">${t('newUser')}</button><br><button class="lnk" onclick="toStep('recover')">Admin locked out?</button></p></div>`;
 }
-async function nextId(){const id=val('lid').trim().toUpperCase();if(!id)return lerr(t('needId'));
-  try{const r=await api('k4_check',{p_id:id});toStep(r.s==='set'?'set':r.waiting?'wait':'login',{id,needsCode:!!r.needsCode,sent:false})}catch(e){lerr(e.message)}}
+async function nextId(idArg){const id=(typeof idArg==='string'?idArg:val('lid')).trim().toUpperCase();if(!id)return lerr(t('needId'));
+  try{const r=await api('k4_check',{p_id:id});
+    if(r.request){toStep('reqwait',{id,rejected:r.request==='rejected'});if(typeof idArg==='string'&&r.request==='pending')toast(t('reqPending'));return}
+    toStep(r.s==='set'?'set':r.waiting?'wait':'login',{id,needsCode:!!r.needsCode,sent:false})}catch(e){lerr(e.message)}}
+async function sendReq(){const n=val('rn').trim(),id=val('lid').trim().toUpperCase(),m=val('rm').trim();if(!n||!id||!m)return lerr(t('needAll'));
+  try{await api('k4_request_access',{p_name:n,p_id:id,p_mobile:m,p_note:val('rt')});toStep('reqdone',{id})}catch(e){lerr(e.message)}}
 async function doLogin(){try{const tk=await api('k4_login',{p_id:lg.id,p_pin:val('pw')});if(!tk)return lerr(t('wrongPin'));
   sv(tk);lg={step:'id',id:'',needsCode:false,sent:false};await load(true)}catch(e){lerr(e.message)}}
 async function forgot(){try{await api('k4_forgot',{p_id:lg.id});toStep('wait',{sent:true})}catch(e){lerr(e.message)}}
@@ -183,7 +210,7 @@ async function setPin(){const p=val('pw'),p2=val('pw2');if(p.length<4)return ler
 async function setup(){const p=val('pw');if(p!==val('pw2'))return lerr(t('pinMatch'));
   try{const tk=await api('k4_setup',{p_id:val('lid'),p_name:val('nm'),p_pin:p});sv(tk);await load(true)}catch(e){lerr(e.message)}}
 async function recover(){try{const tk=await api('k4_recover',{p_id:val('lid'),p_key:val('rk'),p_pin:val('pw')});sv(tk);lg={step:'id',id:'',needsCode:false,sent:false};await load(true)}catch(e){lerr(e.message)}}
-async function logout(){try{await api('k4_logout',{p_token:tok})}catch(e){}sv(null);me=null;users={};logs=[];last='';tab='home';open=null;load(true)}
+async function logout(){try{await api('k4_logout',{p_token:tok})}catch(e){}sv(null);me=null;users={};logs=[];reqs={};last='';tab='home';open=null;load(true)}
 
 /* ---------- ADMIN ---------- */
 const U=()=>Object.entries(users).filter(([,u])=>u.role==='user');
@@ -192,7 +219,7 @@ const resets=()=>Object.entries(users).filter(([,u])=>u.resetReq&&!u.resetOk);
 const okResets=()=>Object.entries(users).filter(([,u])=>u.resetOk);
 const devReqs=()=>U().flatMap(([id,u])=>Object.keys(u.devReq||{}).filter(i=>(u.devices||[])[i]).map(i=>[id,u,+i]));
 const waitingPass=()=>U().filter(([,u])=>u.passType==='none');
-const pendN=()=>resets().length+devReqs().length+waitingPass().length;
+const pendN=()=>Object.keys(reqs).length+resets().length+devReqs().length+waitingPass().length;
 const TABS=[['home','🏠','Home'],['users','👥','Users'],['req','🔔','Requests'],['log','📜','Log']];
 const tabBar=()=>`<nav class="tabs">${TABS.map(([k,i,n])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><span>${i}</span>${n}${k==='req'&&pendN()?`<i class="dot">${pendN()}</i>`:''}</button>`).join('')}</nav>`;
 function go(k,f){tab=k;if(f){filter=f;q=''}scrollTo(0,0);render()}
@@ -243,7 +270,7 @@ function detail(id,u){
   let dv='';for(let i=0;i<u.count;i++){const d=(u.devices||[])[i];
     dv+=`<div class="dv"><b>Pass ${i+1}</b> `+(d?`<div>📱 ${E(d.model)}</div><div class="mut">IMEI <span class="mono">${E(d.imei)}</span> <button class="lnk" onclick="cp('${E(d.imei)}')">copy</button></div><div class="mut">Mobile ${E(d.num||'-')} · ${E(d.os||'-')}</div>${(u.devReq||{})[i]?'<div class="warn">⚠ User asked to change this device</div>':''}<button class="sm d" style="margin-top:6px" onclick="rmDev('${id}',${i})">Remove device</button>`:'<span class="mut">– no device registered yet</span>')+'</div>'}
   const tmp=u.passType!=='perm';
-  return `<div style="margin-top:8px">${u.count?`<h2 style="margin:6px 0">Registered devices</h2>${dv}`:''}
+  return `<div style="margin-top:8px"><div class="mut">${u.mobile?'📞 <a href="tel:'+E(u.mobile)+'">'+E(u.mobile)+'</a> · ':''}${u.verifiedBy?'Verified by '+E(u.verifiedBy):'Not verified by an admin'}${u.approvedBy?' · Pass approved by '+E(u.approvedBy):''}</div>${u.count?`<h2 style="margin:6px 0">Registered devices</h2>${dv}`:''}
   <h2 style="margin:12px 0 6px">Pass settings</h2>
   <div class="row"><select id="ty_${id}" onchange="g('tf_${id}').style.display=this.value==='temp'?'':'none'"><option value="temp"${u.passType!=='perm'?' selected':''}>Temporary pass</option><option value="perm"${u.passType==='perm'?' selected':''}>Permanent pass</option></select>
   <select id="n_${id}">${[1,2,3,4,5].map(n=>`<option value="${n}"${n==(u.count||1)?' selected':''}>${n} pass${n>1?'es':''}</option>`).join('')}</select></div>
@@ -266,11 +293,17 @@ async function rmDev(id,i){if(await ask('Remove device?',(users[id].devices[i]||
 
 function reqView(){
   const R=resets(),O=okResets(),D=devReqs(),W=waitingPass();
-  return `<h2 style="margin-top:4px">PIN reset requests</h2>`+(R.length||O.length?R.map(([id,u])=>`<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span><div class="mut">Requested ${dt(u.resetReq)}</div><div class="row" style="margin-top:6px"><button class="sm" onclick="act('k4_reset_ok',{p_id:'${id}'},'Approved – user has 1 hour to set a new PIN')">Approve</button><button class="sm s" onclick="act('k4_reset_deny',{p_id:'${id}'},'Denied')">Deny</button></div></div>`).join('')
+  const RQ=Object.entries(reqs);
+  return `<h2 style="margin-top:4px">Access requests (new users)</h2>`+(RQ.length?RQ.map(([id,r])=>`<div class="card"><div class="rq"><div><b style="font-size:17px">${E(r.name)}</b> <span class="mut">(${E(id)})</span>
+    <div>📞 <a href="tel:${E(r.mobile)}">${E(r.mobile)}</a></div>${r.note?`<div class="mut">${E(r.note)}</div>`:''}<div class="mut">Requested ${dt(r.t)}</div></div></div>
+    <div class="row" style="margin-top:8px"><button class="sm" onclick="reqOk('${id}')">Verify &amp; approve</button><button class="sm s" onclick="reqNo('${id}')">Reject</button></div></div>`).join(''):'<p class="mut">No new access requests.</p>')
+  +`<h2>PIN reset requests</h2>`+(R.length||O.length?R.map(([id,u])=>`<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span><div class="mut">Requested ${dt(u.resetReq)}</div><div class="row" style="margin-top:6px"><button class="sm" onclick="act('k4_reset_ok',{p_id:'${id}'},'Approved – user has 1 hour to set a new PIN')">Approve</button><button class="sm s" onclick="act('k4_reset_deny',{p_id:'${id}'},'Denied')">Deny</button></div></div>`).join('')
     +O.map(([id,u])=>`<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span><div class="mut">Approved – user must set the new PIN before ${dt(u.resetOkAt+36e5)}</div><div class="row" style="margin-top:6px"><button class="sm s" onclick="act('k4_reset_deny',{p_id:'${id}'},'Cancelled')">Cancel approval</button></div></div>`).join(''):'<p class="mut">No PIN reset requests.</p>')
   +`<h2>Device change requests</h2>`+(D.length?D.map(([id,u,i])=>{const d=u.devices[i];return `<div class="card"><b>${E(u.name)}</b> <span class="mut">(${E(id)}) · Pass ${i+1}</span><div>📱 ${E(d.model)}</div><div class="mut mono">${E(d.imei)}</div><div class="mut">Asked ${dt(u.devReq[i])}</div><div class="row" style="margin-top:6px"><button class="sm d" onclick="rmDev('${id}',${i})">Remove device</button><button class="sm s" onclick="act('k4_dismiss_dev',{p_id:'${id}',p_idx:${i}},'Dismissed')">Dismiss</button></div></div>`}).join(''):'<p class="mut">No device requests.</p>')
   +`<h2>Waiting for a pass</h2>`+(W.length?W.map(([id,u])=>`<div class="card"><div class="uh" onclick="openUser('${id}')"><div><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span><div class="mut">${u.pinSet?'PIN set':'PIN not set yet'} · no pass</div></div><button class="sm s" style="flex:none">Set pass</button></div></div>`).join(''):'<p class="mut">Everyone has a pass.</p>');
 }
+async function reqOk(id){const r=reqs[id];if(r&&await ask('Verified this person?',`Confirm you have verified ${r.name} (${r.mobile}). A user will be created with no PIN; they set it at first login using the last 4 digits of this mobile number as the code.`,'Yes, approve'))act('k4_req_approve',{p_id:id},'User onboarded – set a pass next')}
+async function reqNo(id){if(await ask('Reject request?',`${(reqs[id]||{}).name||id} will see that the request was not approved.`,'Reject',true))act('k4_req_reject',{p_id:id},'Rejected')}
 function openUser(id){open=id;tab='users';filter='all';q=id;scrollTo(0,0);render()}
 function logView(){return `<h2 style="margin-top:4px">Recent activity</h2><div class="card">`+(logs.length?logs.map(l=>`<div class="lg"><time>${dt(l.t)}</time><div><b>${E(l.by)}</b> – ${E(l.act)}${l.to?' <span class="mut">'+E(l.to)+'</span>':''}</div></div>`).join(''):'<span class="mut">Nothing yet.</span>')+'</div>'}
 
@@ -286,10 +319,13 @@ function userView(u){
   const T=u.passType==='temp',x=isExp(u),cls=x?'x':T?'t':'p',dev=u.devices||[];
   let out=T&&!x&&u.expiry-now()<36e5?`<div class="card warn2">⏰ ${t('low')} <b class="lt" data-exp="${u.expiry}"></b></div>`:'';
   for(let i=0;i<u.count;i++){const d=dev[i],req=(u.devReq||{})[i];
-    out+=`<div class="pass ${cls}"><small>${T?t('tempL'):t('permL')}</small><h3>${T?t('tempT'):t('permT')}${x?' — '+t('exp'):''}</h3><small>${t('passOf',i+1,u.count)}</small>
+    out+=`<div class="pass ${cls}"><div class="ptop">${passLogo()}<b>${T?t('tempL'):t('permL')}</b></div>
+    <h3>${T?t('tempT'):t('permT')}</h3><small>${t('passOf',i+1,u.count)}</small>
+    <div class="who"><small>${t('holder')}</small><div class="big">${E(u.name)}</div><div class="idl">${E(u.id||'')}</div></div>
+    <div class="apr"><div><small>${t('appr')}</small><div class="big2">${E(u.approvedBy||'-')}</div>${u.approvedAt?`<small style="text-transform:none">${dt(u.approvedAt)}</small>`:''}</div>
+    <div class="stamp${x?' bad':''}">${x?t('exp'):'✔ '+t('stampOk')}${u.approvedAt?`<small>${new Date(u.approvedAt).toLocaleDateString([],{day:'2-digit',month:'short',year:'numeric'})}</small>`:''}</div></div>
     <div class="live"><i></i><span class="nowc"></span></div>
     ${T?`<div class="clock" data-exp="${u.expiry}">--:--:--</div><div class="kv"><span>${t('upto')}</span><b>${dt(u.expiry)}</b></div>`:`<div class="kv"><span>${t('validity')}</span><b>${t('perm')}</b></div>`}
-    <div class="kv"><span>${t('appr')}</span><b>${E(u.approvedBy)}</b></div><div class="kv"><span>${t('holder')}</span><b>${E(u.name)}</b></div>
     ${d?`<div class="kv"><span>${t('dev')}</span><b>${E(d.model)}</b></div><div class="kv"><span>${t('imei')}</span><b>${E(d.imei)}</b></div><div class="kv"><span>${t('mob')}</span><b>${E(d.num||'-')}</b></div><div class="kv"><span>${t('plat')}</span><b>${E(d.os||'-')}</b></div>`
       +(x?'':req?`<p class="mut2">⏳ ${t('lostSent')}</p>`:`<button class="sm s" style="width:100%;margin-top:10px" onclick="lostDev(${i})">${t('lost')}</button>`)
     :(x?`<p>${t('expN')}</p>`:`<p style="margin:10px 0 4px"><b>${t('addFor',i+1)}</b></p>
