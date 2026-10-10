@@ -235,13 +235,13 @@ const resets=()=>Object.entries(users).filter(([,u])=>u.resetReq&&!u.resetOk);
 const okResets=()=>Object.entries(users).filter(([,u])=>u.resetOk);
 const devReqs=()=>U().flatMap(([id,u])=>Object.keys(u.devReq||{}).filter(i=>(u.devices||[])[i]).map(i=>[id,u,+i]));
 const waitingPass=()=>U().filter(([,u])=>u.passType==='none');
-const noMyDev=()=>{const m=users[me];return !!m&&m.role==='admin'&&!(m.devices||[]).some(x=>x&&(x.dtype||'Mobile')==='Mobile')};
+const noMyDev=()=>{const m=users[me];return !!m&&m.role==='admin'&&m.passType!=='none'&&!(m.devices||[]).some(x=>x&&(x.dtype||'Mobile')==='Mobile')};
 const pendN=()=>Object.keys(reqs).length+resets().length+devReqs().length+waitingPass().length;
 const TABS=[['home','🏠','Home'],['me','🪪','My Pass'],['users','👥','Users'],['req','🔔','Requests'],['log','📜','Log']];
 const tabBar=()=>`<nav class="tabs">${TABS.map(([k,i,n])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><span>${i}</span>${n}${k==='req'&&pendN()?`<i class="dot">${pendN()}</i>`:''}${k==='me'&&noMyDev()?'<i class="dot">!</i>':''}</button>`).join('')}</nav>`;
 function go(k,f){tab=k;if(f){filter=f;q=''}scrollTo(0,0);render()}
-const myPass=a=>({...a,passType:'perm',count:Math.min(5,Math.max(1,(a.devices||[]).length+(extraDev?1:0))),approvedBy:a.approvedBy||'Admin'});
-function adminView(a){return tab==='me'?(()=>{const mp=myPass(a);return userView(mp)+((mp.devices||[]).filter(Boolean).length>=mp.count&&mp.count<5?`<button style="width:100%;margin-bottom:12px" onclick="extraDev=true;render()">➕ Add another device (Laptop, Mobile…)</button>`:'')})():tab==='users'?usersView(a):tab==='req'?reqView():tab==='log'?logView():homeView()}
+const myPass=a=>({...a,count:a.passType==='none'?0:Math.min(5,(a.count||1)+(extraDev&&(a.count||1)<5?1:0)),approvedBy:a.approvedBy||'Admin'});
+function adminView(a){return tab==='me'?(()=>{const mp=myPass(a),filled=(mp.devices||[]).filter(Boolean).length>=(a.count||0)&&(a.count||0)>0&&(a.count||0)<5&&a.passType!=='none'&&!isExp(a);return userView(mp)+(filled&&!extraDev?`<button style="width:100%;margin-bottom:12px" onclick="extraDev=true;render()">➕ Add another device (Laptop, Mobile…)</button>`:'')+`<h2>Manage my pass</h2><div class="card">${passControls(me,a,true)}</div>`})():tab==='users'?usersView(a):tab==='req'?reqView():tab==='log'?logView():homeView()}
 
 function homeView(){
   const T=U().filter(([,u])=>u.passType==='temp'),P=U().filter(([,u])=>u.passType==='perm'),X=U().filter(([,u])=>exp24(u));
@@ -282,32 +282,35 @@ function ulist(){
 }
 function row(id,u){
   const adm=u.role==='admin',o=open===id,x=isExp(u);
-  const tg=adm?'<span class="tag a">Admin</span>':u.passType==='temp'?'<span class="tag t">Temp</span>':u.passType==='perm'?'<span class="tag p">Permanent</span>':'';
+  const tg=(adm?'<span class="tag a">Admin</span>':'')+(u.passType==='temp'?'<span class="tag t">Temp</span>':u.passType==='perm'?'<span class="tag p">Permanent</span>':'');
   const fl=(u.resetReq&&!u.resetOk?'<span class="tag r">PIN reset?</span>':'')+(u.pinSet?'':'<span class="tag n">PIN not set</span>');
-  const sub=adm?'Admin':u.passType==='none'?'No pass yet':`${u.count} pass(es) · ${devN(u)}/${u.count} device(s)`+(u.passType==='temp'?' · '+(x?'EXPIRED':'until '+dt(u.expiry)):'');
+  const sub=(adm?'Admin · ':'')+(u.passType==='none'?'No pass yet':`${u.count} pass(es) · ${devN(u)}/${u.count} device(s)`+(u.passType==='temp'?' · '+(x?'EXPIRED':'until '+dt(u.expiry)):''));
   return `<div class="card ur"><div class="uh" onclick="tg('${id}')"><div><b>${E(u.name)}</b> <span class="mut">(${E(id)})</span>${tg}${fl}<div class="mut">${sub}</div></div><span class="chev">${o?'▾':'▸'}</span></div>${o?detail(id,u):''}</div>`;
 }
 function tg(id){open=open===id?null:id;g('ulist').innerHTML=ulist()}
-function detail(id,u){
-  if(u.role==='admin')return `<div class="mut" style="margin-top:6px">${(u.devices||[]).filter(Boolean).map(d=>'<div>'+devIc(d)+' '+E(d.dtype||'Mobile')+' · '+E(d.model)+' · '+idLbl(d)+' <span class="mono">'+E(d.imei)+'</span>'+((d.dtype||'Mobile')==='Mobile'&&d.num?' · 📞 '+E(d.num):'')+'</div>').join('')||'No device registered yet'}</div><div class="row" style="margin-top:8px">${id===me?`<button class="sm d" onclick="demote()">Demote myself to User</button>`:`<button class="sm s" onclick="delUser('${id}')">Delete admin</button>`}</div>`;
-  let dv='';for(let i=0;i<u.count;i++){const d=(u.devices||[])[i];
+function devList(id,u){let dv='';for(let i=0;i<u.count;i++){const d=(u.devices||[])[i];
     dv+=`<div class="dv"><b>Pass ${i+1}</b> `+(d?`<div>${devIc(d)} <b>${E(d.dtype||'Mobile')}</b> · ${E(d.model)}</div><div class="mut">${idLbl(d)} <span class="mono">${E(d.imei)}</span> <button class="lnk" onclick="cp('${E(d.imei)}')">copy</button></div>${(d.dtype||'Mobile')==='Mobile'?`<div class="mut">Mobile ${E(d.num||'-')}${d.os?' · '+E(d.os):''}</div>`:''}${(u.devReq||{})[i]?'<div class="warn">⚠ User asked to change this device</div>':''}<button class="sm d" style="margin-top:6px" onclick="rmDev('${id}',${i})">Remove device</button>`:'<span class="mut">– no device registered yet</span>')+'</div>'}
-  const tmp=u.passType!=='perm';
-  return `<div style="margin-top:8px"><div class="mut">${u.mobile?'📞 <a href="tel:'+E(u.mobile)+'">'+E(u.mobile)+'</a> · ':''}${u.verifiedBy?'Verified by '+E(u.verifiedBy):'Not verified by an admin'}${u.approvedBy?' · Pass approved by '+E(u.approvedBy):''}</div>${u.count?`<h2 style="margin:6px 0">Registered devices</h2>${dv}`:''}
-  <h2 style="margin:12px 0 6px">Pass settings</h2>
-  <div class="row"><select id="ty_${id}" onchange="g('tf_${id}').style.display=this.value==='temp'?'':'none'"><option value="temp"${u.passType!=='perm'?' selected':''}>Temporary pass</option><option value="perm"${u.passType==='perm'?' selected':''}>Permanent pass</option></select>
+  return dv}
+function passControls(id,u,adm){const tmp=u.passType!=='perm';
+  return `<div class="row"><select id="ty_${id}" onchange="g('tf_${id}').style.display=this.value==='temp'?'':'none'"><option value="temp"${u.passType!=='perm'?' selected':''}>Temporary pass</option><option value="perm"${u.passType==='perm'?' selected':''}>Permanent pass</option></select>
   <select id="n_${id}">${[1,2,3,4,5].map(n=>`<option value="${n}"${n==(u.count||1)?' selected':''}>${n} pass${n>1?'es':''}</option>`).join('')}</select></div>
   <div id="tf_${id}" style="display:${tmp?'':'none'}"><label>Valid for (temporary only)</label><div class="row"><input id="d_${id}" type="number" min="0" placeholder="Days" value="1"><input id="h_${id}" type="number" min="0" placeholder="Hours" value="0"></div></div>
-  <div class="row"><button class="sm" onclick="approve('${id}')">${u.passType==='none'?'Approve':'Update'} pass</button>${u.passType!=='none'?`<button class="sm d" onclick="revoke('${id}')">Revoke</button>`:''}</div>
-  ${u.passType==='temp'?`<div class="row" style="margin-top:8px"><button class="sm s" onclick="ext('${id}',24)">+1 day</button><button class="sm s" onclick="ext('${id}',168)">+1 week</button></div>`:''}
+  <div class="row"><button class="sm" onclick="approve('${id}')">${u.passType==='none'?'Approve':'Update'} pass</button>${u.passType!=='none'?`<button class="sm d" onclick="revoke('${id}')">Remove pass</button>`:''}</div>
+  ${u.passType==='temp'?`<div class="row" style="margin-top:8px"><button class="sm s" onclick="ext('${id}',24)">+1 day</button><button class="sm s" onclick="ext('${id}',168)">+1 week</button></div>`:''}`}
+function detail(id,u){
+  const info=`<div class="mut">${u.mobile?'📞 <a href="tel:'+E(u.mobile)+'">'+E(u.mobile)+'</a> · ':''}${u.role==='admin'?(u.passType!=='none'&&u.approvedBy?'Pass approved by '+E(u.approvedBy):'No pass'):(u.verifiedBy?'Verified by '+E(u.verifiedBy):'Not verified by an admin')+(u.approvedBy?' · Pass approved by '+E(u.approvedBy):'')}</div>`;
+  const devs=u.count&&u.passType!=='none'?`<h2 style="margin:6px 0">Registered devices</h2>${devList(id,u)}`:'';
+  if(u.role==='admin')return `<div style="margin-top:8px">${info}${devs}<h2 style="margin:12px 0 6px">${id===me?'My pass':'Pass settings'}</h2>${passControls(id,u,true)}
+  <div class="row" style="margin-top:8px">${id===me?`<button class="sm d" onclick="demote()">Demote myself to User</button>`:`<button class="sm s" onclick="delUser('${id}')">Delete admin</button>`}</div></div>`;
+  return `<div style="margin-top:8px">${info}${devs}<h2 style="margin:12px 0 6px">Pass settings</h2>${passControls(id,u,false)}
   <div class="row" style="margin-top:8px"><button class="sm s" onclick="promote('${id}')">Make Admin</button><button class="sm s" onclick="delUser('${id}')">Delete</button></div></div>`;
 }
 function addUser(){act('k4_add_user',{p_id:val('ai'),p_name:val('an'),p_code:val('ac')},'User added')}
 async function bulk(){const r=await act('k4_bulk_add',{p_text:val('bt')});if(r)toast(`Added ${r.added}${r.skipped.length?', skipped '+r.skipped.length+' ('+r.skipped.slice(0,2).join('; ')+')':''}`,!r.added&&r.skipped.length>0)}
 function approve(id){const ty=val('ty_'+id),hrs=(+val('d_'+id)||0)*24+(+val('h_'+id)||0);
   if(ty==='temp'&&!(hrs>0))return toast('Enter validity days/hours for a temporary pass.',true);
-  act('k4_approve',{p_id:id,p_type:ty,p_count:+val('n_'+id),p_hours:hrs},'Pass saved')}
-async function revoke(id){if(await ask('Revoke pass?',users[id].name+' will lose the pass and registered devices.','Revoke',true))act('k4_revoke',{p_id:id},'Pass revoked')}
+  extraDev=false;act('k4_approve',{p_id:id,p_type:ty,p_count:+val('n_'+id),p_hours:hrs},'Pass saved')}
+async function revoke(id){if(await ask('Remove pass?',(id===me?'Your own pass':users[id].name+"'s pass")+' and its registered devices will be removed. You can approve a pass again any time.','Remove pass',true)){extraDev=false;act('k4_revoke',{p_id:id},'Pass removed')}}
 function ext(id,h){act('k4_extend',{p_id:id,p_hours:h},'Extended')}
 async function promote(id){if(await ask('Make Admin?',users[id].name+' will get full admin powers and lose any pass.','Make Admin'))act('k4_promote',{p_id:id},'Now an admin')}
 async function demote(){if(await ask('Demote yourself?','All your admin powers will be lost.','Demote',true))act('k4_demote',{},'You are now a user')}
